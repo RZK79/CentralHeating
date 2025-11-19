@@ -21,16 +21,16 @@ Controller* Controller::get() {
 
 void Controller::setup() {
     state = State::OFF;
-    Serial.println("Controller::setup()");
-    fumesTemperature = new ThermoCouple(TC_CS);
 
-    boilerTemperature = new NTC(5000, CO_TEMP);
+    fumesTemperature = new ThermoCouple(TC_CS);
+    boilerTemperature = new NTC(10000, CO_TEMP);
     hotWaterTankTemperature = new NTC(5000, CWU_TEMP);
 
     feeder = new Feeder();
     feeder->stop();
 
     blower = new Blower();
+    blower->setSpeed(Blower::Speed::RPM_0);
     blower->stop();
 
     mainTimer = new Timer();
@@ -53,6 +53,7 @@ void Controller::loop() {
     mainTimer->update();
     cleaningTimer->update();
     loopTimer->update();
+    blower->update();
 
     if (Serial.available()) {
         SerialCommunication::get()->serialEvent();
@@ -62,17 +63,13 @@ void Controller::loop() {
 void Controller::onTime(Timer* timer) {
     if (timer == mainTimer) {
         if (state == State::FIRING_UP_PREBLOW) {
-            Serial.println("PREFEED");
-
             feeder->prefeed();
 
             mainTimer->start(PREFEED_TIME);
 
             changeStateTo(State::PREFEED);
         } else if (state == State::PREFEED) {
-            Serial.println("FIRING_UP");
-
-            blower->setRPM(1.06f * CurrentState::get()->blowerSpeedToSet);
+            blower->setSpeed(Blower::Speed::RPM_0);
 
             feeder->setFeedTime(1.5f * CurrentState::get()->feederTimeToSet);
             feeder->setPeriodTime(CurrentState::get()->feederPeriodToSet);
@@ -83,22 +80,18 @@ void Controller::onTime(Timer* timer) {
             changeStateTo(State::FIRING_UP);
         } else if (state == State::STABILIZATION) {
             if (FIRING_UP_MAX_TEMP - CurrentState::get()->fumesTemperature >= FIRING_UP_TEMP_DIFF) {
-                Serial.println("EXTINCTION");
-
                 Relays::get()->turnOffAll();
 
                 feeder->stop();
 
-                blower->setRPM(2000);
+                blower->setSpeed(Blower::Speed::RPM_3600);
 
                 mainTimer->stop();
                 cleaningTimer->stop();
 
                 changeStateTo(State::EXTINCTION);
             } else {
-                Serial.println("NORMAL");
-
-                blower->setRPM(CurrentState::get()->blowerSpeedToSet);
+                blower->setSpeed(Blower::Speed::RPM_1500);
 
                 feeder->setFeedTime(CurrentState::get()->feederTimeToSet);
                 feeder->setPeriodTime(CurrentState::get()->feederPeriodToSet);
@@ -111,7 +104,7 @@ void Controller::onTime(Timer* timer) {
         }
     } else if (timer == cleaningTimer) {
         if (state == State::CLEANING) {
-            blower->setRPM(CurrentState::get()->blowerSpeedToSet);
+            blower->setSpeed(Blower::Speed::RPM_1500);
 
             feeder->setFeedTime(CurrentState::get()->feederTimeToSet);
             feeder->setPeriodTime(CurrentState::get()->feederPeriodToSet);
@@ -121,7 +114,7 @@ void Controller::onTime(Timer* timer) {
 
             changeStateTo(State::NORMAL);
         } else {
-            blower->setRPM(2000);
+            blower->setSpeed(Blower::Speed::RPM_3600);
 
             feeder->stop();
 
@@ -132,9 +125,7 @@ void Controller::onTime(Timer* timer) {
     } else if (timer == loopTimer) {
         if (state == State::OFF) {
             if (CurrentState::get()->isOn) {
-                Serial.println("FIRING_UP_PREBLOW");
-
-                blower->setRPM(2000);
+                blower->setSpeed(Blower::Speed::RPM_3600);
                 blower->start();
 
                 mainTimer->start(PREBLOW_TIME);
@@ -143,11 +134,9 @@ void Controller::onTime(Timer* timer) {
             }
         } else if (state == State::FIRING_UP) {
             if (CurrentState::get()->fumesTemperature > FIRING_UP_MAX_TEMP) {
-                Serial.println("STABILIZATION");
-
                 Relays::get()->turnLighterOff();
 
-                blower->setRPM(1.06f * CurrentState::get()->blowerSpeedToSet);
+                blower->setSpeed(Blower::Speed::RPM_2000);
 
                 feeder->setFeedTime(CurrentState::get()->feederTimeToSet);
                 feeder->setPeriodTime(CurrentState::get()->feederPeriodToSet);
@@ -187,13 +176,11 @@ void Controller::onTime(Timer* timer) {
                 changeStateTo(State::OFF);
             }
         } else if (state != State::OFF && CurrentState::get()->isOn == false) {
-            Serial.println("EXTINCTION");
-
             Relays::get()->turnOffAll();
 
             feeder->stop();
 
-            blower->setRPM(2000);
+            blower->setSpeed(Blower::Speed::RPM_3600);
 
             mainTimer->stop();
             cleaningTimer->stop();

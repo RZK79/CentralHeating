@@ -3,14 +3,31 @@
 
 #include <Arduino.h>
 
-class Blower{
-    uint16_t currentRPM;
+class Blower {
 public:
+    enum Speed {
+        RPM_3600,
+        RPM_3000,
+        RPM_2500,
+        RPM_2000,
+        RPM_1500,
+        RPM_1000,
+        RPM_0
+    };
+private:
+    Speed speed;
+    static int currentRPS;
+    static int time;
+    static int currentRPM;
+public:
+
     Blower();
     void start();
     void stop();
-    void setRPM(uint16_t rpm);
+    void setSpeed(Speed speed);
+    Speed getSpeed();
     void update();
+    static void SpeedInterrupt();
 };
 
 #endif
