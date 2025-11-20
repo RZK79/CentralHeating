@@ -16,9 +16,11 @@ public:
 
     void turnCentralHeatingPumpOn();
     void turnCentralHeatingPumpOff();
-
+    bool isCentralHeatingPumpOn();
+    
     void turnHotWaterPumpOn();
     void turnHotWaterPumpOff();
+    bool isHotWaterPumpOn();
 };
 
 #endif

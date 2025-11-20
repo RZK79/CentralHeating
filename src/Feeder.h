@@ -18,6 +18,7 @@ private:
     uint16_t periodTime;
 
     Feeder::State currentState;
+    bool feederOn;
 public:
     Feeder();
 
@@ -32,8 +33,9 @@ public:
     void stop();
     Feeder::State getState();
 
-    virtual void onTime(Timer* timer);
+    bool isFeederOn();
 
+    virtual void onTime(Timer* timer);
 };
 
 #endif

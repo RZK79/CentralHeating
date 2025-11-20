@@ -21,12 +21,13 @@ public:
     int centralHeatingTemperatureToSet;
     int hotWaterTemperatureToSet;
     
-    bool isBlowerOn;
     int blowerSpeedToSet;
 
     int centralHeatingTemperature;
     int hotWaterTemperature;
     int fumesTemperature;
+    
+    int error;
 };
 
 #endif

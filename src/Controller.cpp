@@ -4,6 +4,7 @@
 #include "SerialCommunication.h"
 #include "CurrentState.h"
 #include "Relays.h"
+#include "Errors.h"
 
 Controller* Controller::instance = nullptr;
 
@@ -20,7 +21,7 @@ Controller* Controller::get() {
 }
 
 void Controller::setup() {
-    state = State::OFF;
+    state = State::FIRING_UP_PREBLOW;
 
     fumesTemperature = new ThermoCouple(TC_CS);
     boilerTemperature = new NTC(10000, CO_TEMP);
@@ -30,7 +31,6 @@ void Controller::setup() {
     feeder->stop();
 
     blower = new Blower();
-    blower->setSpeed(Blower::Speed::RPM_0);
     blower->stop();
 
     mainTimer = new Timer();
@@ -79,7 +79,7 @@ void Controller::onTime(Timer* timer) {
 
             changeStateTo(State::FIRING_UP);
         } else if (state == State::STABILIZATION) {
-            if (FIRING_UP_MAX_TEMP - CurrentState::get()->fumesTemperature >= FIRING_UP_TEMP_DIFF) {
+            if (currentStateTime > STABILIZATION_TIME && FIRING_UP_MAX_TEMP - CurrentState::get()->fumesTemperature >= FIRING_UP_TEMP_DIFF) {
                 Relays::get()->turnOffAll();
 
                 feeder->stop();
@@ -88,6 +88,8 @@ void Controller::onTime(Timer* timer) {
 
                 mainTimer->stop();
                 cleaningTimer->stop();
+
+                CurrentState::get()->error = Errors::STABILIZATION_TIMEOUT;
 
                 changeStateTo(State::EXTINCTION);
             } else {
@@ -133,7 +135,7 @@ void Controller::onTime(Timer* timer) {
                 changeStateTo(State::FIRING_UP_PREBLOW);
             }
         } else if (state == State::FIRING_UP) {
-            if (CurrentState::get()->fumesTemperature > FIRING_UP_MAX_TEMP) {
+            if (currentStateTime < FIRING_UP_TIME && CurrentState::get()->fumesTemperature > FIRING_UP_MAX_TEMP) {
                 Relays::get()->turnLighterOff();
 
                 blower->setSpeed(Blower::Speed::RPM_2000);
@@ -144,6 +146,13 @@ void Controller::onTime(Timer* timer) {
                 mainTimer->start(STABILIZATION_TIME);
 
                 changeStateTo(State::STABILIZATION);
+            } else if (currentStateTime > FIRING_UP_TIME) {
+                Relays::get()->turnLighterOff();
+                blower->stop();
+                feeder->stop();
+                CurrentState::get()->error = Errors::FIRING_UP_TIMEOUT;
+                CurrentState::get()->isOn = false;
+                changeStateTo(State::OFF);
             }
         } else if (state == State::NORMAL) {
             if (CurrentState::get()->centralHeatingTemperature > 40) {
@@ -155,7 +164,7 @@ void Controller::onTime(Timer* timer) {
             }
 
             if (CurrentState::get()->centralHeatingTemperature > 50) {
-                if (CurrentState::get()->centralHeatingTemperature > CurrentState::get()->centralHeatingTemperatureToSet) {
+                if (CurrentState::get()->centralHeatingTemperature < CurrentState::get()->centralHeatingTemperatureToSet) {
                     Relays::get()->turnCentralHeatingPumpOn();
                 } else {
                     Relays::get()->turnHotWaterPumpOff();
@@ -163,9 +172,14 @@ void Controller::onTime(Timer* timer) {
             }
 
             if (CurrentState::get()->fumesTemperature > 200) {
-                feederMultiplier *= 0.8f;
-                feeder->setFeedTime(feederMultiplier * CurrentState::get()->feederTimeToSet);
-                feeder->setPeriodTime(CurrentState::get()->feederPeriodToSet);
+                if (CurrentState::get()->centralHeatingTemperature < CurrentState::get()->centralHeatingTemperatureToSet ||
+                    CurrentState::get()->hotWaterTemperature < CurrentState::get()->hotWaterTemperatureToSet) {
+                    feederMultiplier *= 0.8f;
+                    feeder->setFeedTime(feederMultiplier * CurrentState::get()->feederTimeToSet);
+                    feeder->setPeriodTime(CurrentState::get()->feederPeriodToSet);
+                } else {
+
+                }
             }
         } else if (state == State::EXTINCTION) {
             if (CurrentState::get()->fumesTemperature < 70) {
@@ -188,6 +202,8 @@ void Controller::onTime(Timer* timer) {
             changeStateTo(State::EXTINCTION);
         }
 
+        currentStateTime++;
+
         getSensorsData();
     }
 }
@@ -200,8 +216,17 @@ void Controller::getSensorsData() {
 
 void Controller::changeStateTo(State newState) {
     state = newState;
+    currentStateTime = 0;
 }
 
 State Controller::getState() {
     return state;
+}
+
+bool Controller::isBlowerOn() {
+    return blower->getSpeed() == Blower::Speed::RPM_0 ? false : true;
+}
+
+bool Controller::isFeederOn() {
+    return feeder->isFeederOn();
 }

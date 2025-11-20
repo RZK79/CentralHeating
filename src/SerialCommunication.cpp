@@ -1,6 +1,7 @@
 #include <string.h>
 #include "SerialCommunication.h"
 #include "CurrentState.h"
+#include "Controller.h"
 
 SerialCommunication* SerialCommunication::instance = nullptr;
 
@@ -43,7 +44,6 @@ void SerialCommunication::serialEvent() {
             recvInProgress = true;
         }
     }
-
 }
 
 void SerialCommunication::parseData(char* data) {
@@ -61,7 +61,7 @@ void SerialCommunication::parseData(char* data) {
         CurrentState::get()->centralHeatingTemperatureToSet = atoi(&data[3]);
     } else if (strstr(data, "shw") != NULL) {
         CurrentState::get()->hotWaterTemperatureToSet = atoi(&data[3]);
-    } else if (strstr(data, "gch") != NULL) {
+    } else if (strcmp(data, "gch") == 0) {
         Serial.print("*gch");
         Serial.print(CurrentState::get()->centralHeatingTemperature);
         Serial.print("#");
@@ -73,6 +73,28 @@ void SerialCommunication::parseData(char* data) {
         Serial.print("*gf");
         Serial.print(CurrentState::get()->fumesTemperature);
         Serial.print("#");
+    } else if (strstr(data, "gs") != NULL) {
+        Serial.print("*gs");
+        Serial.print(Controller::get()->getState());
+        Serial.print("#");
+    } else if (strstr(data, "ghwp") != NULL) {
+        Serial.print("*ghwp");
+        Serial.print(CurrentState::get()->isHotWaterPumpOn);
+        Serial.print("#");
+    } else if (strcmp(data, "gchp") == 0) {
+        Serial.print("*gchp");
+        Serial.print(CurrentState::get()->isCentralHeatingPumpOn);
+        Serial.print("#");
+    } else if (strcmp(data, "gl") == 0) {
+        Serial.print("*");
+        Serial.print("#");
+    } else if (strcmp(data, "gb") == 0) {
+        Serial.print("*");
+        Serial.print(Controller::get()->isBlowerOn());
+        Serial.print("#");
+    } else if (strcmp(data, "gf") == 0) {
+        Serial.print("*");
+        Serial.print(Controller::get()->isFeederOn());
+        Serial.print("#");
     }
 }
-

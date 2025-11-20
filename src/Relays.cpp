@@ -19,11 +19,11 @@ Relays::Relays() {
 
 }
 
-void Relays::turnOffAll(){
+void Relays::turnOffAll() {
     digitalWrite(CO_PUMP, HIGH);
     digitalWrite(CWU_PUMP, HIGH);
     digitalWrite(LIGHTER, HIGH);
-    
+
     CurrentState::get()->isCentralHeatingPumpOn = false;
     CurrentState::get()->isHotWaterPumpOn = false;
     CurrentState::get()->lighter = false;
@@ -39,6 +39,13 @@ void Relays::turnLighterOff() {
     digitalWrite(LIGHTER, HIGH);
 }
 
+bool Relays::isCentralHeatingPumpOn() {
+    return (bool)digitalRead(CO_PUMP);
+}
+
+bool Relays::isHotWaterPumpOn() {
+    return (bool)digitalRead(CWU_PUMP);
+}
 
 void Relays::turnCentralHeatingPumpOn() {
     CurrentState::get()->isCentralHeatingPumpOn = true;

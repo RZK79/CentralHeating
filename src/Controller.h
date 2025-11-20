@@ -39,6 +39,8 @@ class Controller : public TimerEventListener {
     float feederMultiplier;
 
     State state;
+
+    uint32_t currentStateTime;
 public:
     static Controller* get();
 
@@ -46,7 +48,10 @@ public:
     void loop();
 
     void changeStateTo(State newState);
+
     State getState();
+    bool isBlowerOn();
+    bool isFeederOn();
 
     void getSensorsData();
 

@@ -27,14 +27,12 @@ Blower::Blower() {
 }
 
 void Blower::start() {
-    CurrentState::get()->isBlowerOn = true;
     currentRPM = 0;
     currentRPS = 0;
     time = millis();
 }
 
 void Blower::stop() {
-    CurrentState::get()->isBlowerOn = false;
     setSpeed(Speed::RPM_0);
 }
 
@@ -47,40 +45,36 @@ Blower::Speed Blower::getSpeed() {
 }
 
 void Blower::update() {
-    if (CurrentState::get()->isBlowerOn) {
-        float duty = 0;
+    float duty = 0;
 
-        switch (speed) {
-            case Blower::Speed::RPM_3600:
-                duty = 100;
-                break;
-            case Blower::Speed::RPM_3000:
-                duty = 70.0f;
-                break;
-            case Blower::Speed::RPM_2500:
-                duty = 50.0f;
-                break;
-            case Blower::Speed::RPM_2000:
-                duty = 26.5f;
-                break;
-            case Blower::Speed::RPM_1500:
-                duty = 13.0f;
-                break;
-            case Blower::Speed::RPM_1000:
-                duty = 9.5f;
-                break;
+    switch (speed) {
+        case Blower::Speed::RPM_3600:
+            duty = 100;
+            break;
+        case Blower::Speed::RPM_3000:
+            duty = 70.0f;
+            break;
+        case Blower::Speed::RPM_2500:
+            duty = 50.0f;
+            break;
+        case Blower::Speed::RPM_2000:
+            duty = 26.5f;
+            break;
+        case Blower::Speed::RPM_1500:
+            duty = 13.0f;
+            break;
+        case Blower::Speed::RPM_1000:
+            duty = 9.5f;
+            break;
 
-            case Blower::Speed::RPM_0:
-            default:
-                duty = 0;
-                break;
-        }
-
-        digitalWrite(BLOWER, HIGH);
-        delayMicroseconds((unsigned int)((duty / 100) * 10000.0f));
-        digitalWrite(BLOWER, LOW);
-        delayMicroseconds((unsigned int)(((100.0f - duty) / 100) * 10000.0f));
-    }else{
-        digitalWrite(BLOWER, LOW);
+        case Blower::Speed::RPM_0:
+        default:
+            duty = 0;
+            break;
     }
+
+    digitalWrite(BLOWER, HIGH);
+    delayMicroseconds((unsigned int)((duty / 100) * 10000.0f));
+    digitalWrite(BLOWER, LOW);
+    delayMicroseconds((unsigned int)(((100.0f - duty) / 100) * 10000.0f));
 }

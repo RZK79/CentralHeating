@@ -23,7 +23,6 @@ CurrentState::CurrentState() {
     feederPeriodToSet = 1000;
     centralHeatingTemperatureToSet = 55;
     hotWaterTemperatureToSet = 45;
-    isBlowerOn = false;
     blowerSpeedToSet = Blower::Speed::RPM_0;
     centralHeatingTemperature = 0;
     hotWaterTemperature = 0;

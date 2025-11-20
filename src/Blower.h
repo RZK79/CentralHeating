@@ -12,7 +12,8 @@ public:
         RPM_2000,
         RPM_1500,
         RPM_1000,
-        RPM_0
+        RPM_0,
+        RPM_MAX = RPM_3600
     };
 private:
     Speed speed;

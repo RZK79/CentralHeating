@@ -44,22 +44,30 @@ Feeder::State Feeder::getState() {
 void Feeder::onTime(Timer* timer) {
     switch (currentState) {
         case Feeder::State::FEED:
+            feederOn = true;
             digitalWrite(FEEDER, LOW);
             feederTimer->start(periodTime);
             currentState = Feeder::State::PERIOD;
             break;
 
         case Feeder::State::PERIOD:
+            feederOn = false;
             digitalWrite(FEEDER, HIGH);
             feederTimer->start(feedTime);
             currentState = Feeder::State::FEED;
             break;
 
         case Feeder::State::PREFEED:
-            digitalWrite(FEEDER, HIGH);
+            feederOn = true;
+            digitalWrite(FEEDER, LOW);
             break;
 
         case Feeder::State::OFF:
+            feederOn = false;
             break;
     }
+}
+
+bool Feeder::isFeederOn() {
+    return feederOn;
 }
