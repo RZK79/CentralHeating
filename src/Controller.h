@@ -28,8 +28,6 @@ public:
         EXTINCTION
     };
 private:
-    float endFiringUpTemperature;
-
     ThermoCouple* fumesTemperature;
     NTC* boilerTemperature;
     NTC* hotWaterTankTemperature;
@@ -63,8 +61,6 @@ public:
     CleaningTimer* getCleaningTimer();
     CurrentState* getCurrentState();
     void getSensorsData();
-
-    virtual void onTime(Timer* timer);
 };
 
 extern Controller* controller;

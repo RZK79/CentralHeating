@@ -42,9 +42,6 @@ void Controller::loop() {
     se->serialEvent();
 }
 
-void Controller::onTime(Timer* timer) {
-}
-
 void Controller::getSensorsData() {
     currentState->fumesTemperature = fumesTemperature->getTemperature();
     currentState->centralHeatingTemperature = boilerTemperature->getTemperature();
