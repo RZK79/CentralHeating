@@ -9,8 +9,9 @@ Controller::Controller() {
 }
 
 void Controller::setup() {
-    currentState = new CurrentState();
+    se = new SerialCommunication();
 
+    currentState = new CurrentState();
     state = State::OFF;
 
     fumesTemperature = new ThermoCouple(TC_CS);
@@ -38,23 +39,10 @@ void Controller::loop() {
     loopTimer->update();
     blower->update();
 
-    if (Serial.available()) {
-        SerialCommunication::get()->serialEvent();
-    }
+    se->serialEvent();
 }
 
 void Controller::onTime(Timer* timer) {
-    if (timer == mainTimer) {
-
-    } else if (timer == cleaningTimer) {
-
-    } else if (timer == loopTimer) {
-
-
-        currentStateTime++;
-
-        getSensorsData();
-    }
 }
 
 void Controller::getSensorsData() {
@@ -65,7 +53,6 @@ void Controller::getSensorsData() {
 
 void Controller::changeStateTo(State newState) {
     state = newState;
-    currentStateTime = 0;
 }
 
 Controller::State Controller::getState() {

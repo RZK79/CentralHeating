@@ -3,15 +3,6 @@
 #include "CurrentState.h"
 #include "Controller.h"
 
-SerialCommunication* SerialCommunication::instance = nullptr;
-
-SerialCommunication* SerialCommunication::get() {
-    if (SerialCommunication::instance == nullptr) {
-        SerialCommunication::instance = new SerialCommunication();
-    }
-    return SerialCommunication::instance;
-}
-
 SerialCommunication::SerialCommunication() {
     init();
 }
@@ -23,25 +14,28 @@ void SerialCommunication::init() {
 }
 
 void SerialCommunication::serialEvent() {
-    char c;
+    if (Serial.available()) {
 
-    while (Serial.available() > 0) {
-        c = Serial.read();
-        if (recvInProgress) {
-            if (c != end) {
-                data[i++] = c;
-                if (i >= 32) {
-                    i = 31;
+        char c;
+
+        while (Serial.available() > 0) {
+            c = Serial.read();
+            if (recvInProgress) {
+                if (c != end) {
+                    data[i++] = c;
+                    if (i >= 32) {
+                        i = 31;
+                    }
+                } else {
+                    data[i] = '\0';
+                    recvInProgress = false;
+                    i = 0;
+                    parseData(data);
                 }
-            } else {
-                data[i] = '\0';
-                recvInProgress = false;
-                i = 0;
-                parseData(data);
+            } else if (c == start) {
+                init();
+                recvInProgress = true;
             }
-        } else if (c == start) {
-            init();
-            recvInProgress = true;
         }
     }
 }

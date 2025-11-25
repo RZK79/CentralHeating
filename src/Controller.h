@@ -11,6 +11,7 @@
 #include "timers/LoopTimer.h"
 #include "timers/CleaningTimer.h"
 #include "CurrentState.h"
+#include "SerialCommunication.h"
 
 class Controller {
 public:
@@ -43,7 +44,8 @@ private:
     State state;
 
     CurrentState* currentState;
-    uint32_t currentStateTime;
+
+    SerialCommunication* se;
 public:
     Controller();
 

@@ -51,4 +51,6 @@ void MainTimer::onTime(Timer* timer) {
             controller->changeStateTo(Controller::State::NORMAL);
         }
     }
+
+    controller->getSensorsData();
 }
