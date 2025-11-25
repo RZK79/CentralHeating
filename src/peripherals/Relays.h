@@ -4,10 +4,8 @@
 #include <Arduino.h>
 
 class Relays {
-    static Relays* instance;
-    Relays();
 public:
-    static Relays* get();
+    Relays();
 
     void turnOffAll();
 
@@ -17,7 +15,7 @@ public:
     void turnCentralHeatingPumpOn();
     void turnCentralHeatingPumpOff();
     bool isCentralHeatingPumpOn();
-    
+
     void turnHotWaterPumpOn();
     void turnHotWaterPumpOff();
     bool isHotWaterPumpOn();

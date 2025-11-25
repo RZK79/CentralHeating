@@ -1,16 +1,6 @@
 #include "CurrentState.h"
 #include <Arduino.h>
-#include "Blower.h"
-
-CurrentState* CurrentState::instance = nullptr;
-
-CurrentState* CurrentState::get() {
-    if (CurrentState::instance == nullptr) {
-        CurrentState::instance = new CurrentState();
-    }
-
-    return CurrentState::instance;
-}
+#include "peripherals/Blower.h"
 
 CurrentState::CurrentState() {
     wifiConnected = false;

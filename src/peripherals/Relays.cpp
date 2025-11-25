@@ -1,16 +1,7 @@
 #include "Relays.h"
 #include "Config.h"
+#include "Controller.h"
 #include "CurrentState.h"
-
-Relays* Relays::instance = nullptr;
-
-Relays* Relays::get() {
-    if (Relays::instance == nullptr) {
-        Relays::instance = new Relays();
-    }
-
-    return Relays::instance;
-}
 
 Relays::Relays() {
     pinMode(CO_PUMP, OUTPUT);
@@ -24,18 +15,18 @@ void Relays::turnOffAll() {
     digitalWrite(CWU_PUMP, HIGH);
     digitalWrite(LIGHTER, HIGH);
 
-    CurrentState::get()->isCentralHeatingPumpOn = false;
-    CurrentState::get()->isHotWaterPumpOn = false;
-    CurrentState::get()->lighter = false;
+    controller->getCurrentState()->isCentralHeatingPumpOn = false;
+    controller->getCurrentState()->isHotWaterPumpOn = false;
+    controller->getCurrentState()->lighter = false;
 }
 
 void Relays::turnLighterOn() {
-    CurrentState::get()->lighter = true;
+    controller->getCurrentState()->lighter = true;
     digitalWrite(LIGHTER, LOW);
 }
 
 void Relays::turnLighterOff() {
-    CurrentState::get()->lighter = false;
+    controller->getCurrentState()->lighter = false;
     digitalWrite(LIGHTER, HIGH);
 }
 
@@ -48,22 +39,22 @@ bool Relays::isHotWaterPumpOn() {
 }
 
 void Relays::turnCentralHeatingPumpOn() {
-    CurrentState::get()->isCentralHeatingPumpOn = true;
+    controller->getCurrentState()->isCentralHeatingPumpOn = true;
     digitalWrite(CO_PUMP, LOW);
 }
 
 void Relays::turnCentralHeatingPumpOff() {
-    CurrentState::get()->isCentralHeatingPumpOn = false;
+    controller->getCurrentState()->isCentralHeatingPumpOn = false;
     digitalWrite(CO_PUMP, HIGH);
 }
 
 void Relays::turnHotWaterPumpOn() {
-    CurrentState::get()->isHotWaterPumpOn = true;
+    controller->getCurrentState()->isHotWaterPumpOn = true;
     digitalWrite(CWU_PUMP, LOW);
 }
 
 void Relays::turnHotWaterPumpOff() {
-    CurrentState::get()->isHotWaterPumpOn = false;
+    controller->getCurrentState()->isHotWaterPumpOn = false;
     digitalWrite(CWU_PUMP, HIGH);
 }
 

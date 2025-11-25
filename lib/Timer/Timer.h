@@ -26,6 +26,7 @@ public:
   void resume();
   void reset();
   bool isPaused();
+  unsigned long getPassedMillis();
 };
 
 #endif

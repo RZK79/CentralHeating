@@ -48,53 +48,53 @@ void SerialCommunication::serialEvent() {
 
 void SerialCommunication::parseData(char* data) {
     if (strstr(data, "ton") != NULL) {
-        CurrentState::get()->isOn = true;
+        controller->getCurrentState()->isOn = true;
     } else if (strstr(data, "toff") != NULL) {
-        CurrentState::get()->isOn = false;
+        controller->getCurrentState()->isOn = false;
     } else if (strstr(data, "sft") != NULL) {
-        CurrentState::get()->feederTimeToSet = atoi(&data[3]);
+        controller->getCurrentState()->feederTimeToSet = atoi(&data[3]);
     } else if (strstr(data, "sfp") != NULL) {
-        CurrentState::get()->feederPeriodToSet = atoi(&data[3]);
+        controller->getCurrentState()->feederPeriodToSet = atoi(&data[3]);
     } else if (strstr(data, "sb") != NULL) {
-        CurrentState::get()->blowerSpeedToSet = atoi(&data[2]);
+        controller->getCurrentState()->blowerSpeedToSet = atoi(&data[2]);
     } else if (strstr(data, "sch") != NULL) {
-        CurrentState::get()->centralHeatingTemperatureToSet = atoi(&data[3]);
+        controller->getCurrentState()->centralHeatingTemperatureToSet = atoi(&data[3]);
     } else if (strstr(data, "shw") != NULL) {
-        CurrentState::get()->hotWaterTemperatureToSet = atoi(&data[3]);
+        controller->getCurrentState()->hotWaterTemperatureToSet = atoi(&data[3]);
     } else if (strcmp(data, "gch") == 0) {
         Serial.print("*gch");
-        Serial.print(CurrentState::get()->centralHeatingTemperature);
+        Serial.print(controller->getCurrentState()->centralHeatingTemperature);
         Serial.print("#");
     } else if (strstr(data, "ghw") != NULL) {
         Serial.print("*ghw");
-        Serial.print(CurrentState::get()->hotWaterTemperature);
+        Serial.print(controller->getCurrentState()->hotWaterTemperature);
         Serial.print("#");
     } else if (strstr(data, "gf") != NULL) {
         Serial.print("*gf");
-        Serial.print(CurrentState::get()->fumesTemperature);
+        Serial.print(controller->getCurrentState()->fumesTemperature);
         Serial.print("#");
     } else if (strstr(data, "gs") != NULL) {
         Serial.print("*gs");
-        Serial.print(Controller::get()->getState());
+        Serial.print(controller->getState());
         Serial.print("#");
     } else if (strstr(data, "ghwp") != NULL) {
         Serial.print("*ghwp");
-        Serial.print(CurrentState::get()->isHotWaterPumpOn);
+        Serial.print(controller->getCurrentState()->isHotWaterPumpOn);
         Serial.print("#");
     } else if (strcmp(data, "gchp") == 0) {
         Serial.print("*gchp");
-        Serial.print(CurrentState::get()->isCentralHeatingPumpOn);
+        Serial.print(controller->getCurrentState()->isCentralHeatingPumpOn);
         Serial.print("#");
     } else if (strcmp(data, "gl") == 0) {
         Serial.print("*");
         Serial.print("#");
     } else if (strcmp(data, "gb") == 0) {
         Serial.print("*");
-        Serial.print(Controller::get()->isBlowerOn());
+        Serial.print(controller->getBlower()->isOn());
         Serial.print("#");
     } else if (strcmp(data, "gf") == 0) {
         Serial.print("*");
-        Serial.print(Controller::get()->isFeederOn());
+        Serial.print(controller->getFeeder()->isFeederOn());
         Serial.print("#");
     }
 }

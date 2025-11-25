@@ -28,6 +28,7 @@ public:
     void setSpeed(Speed speed);
     Speed getSpeed();
     void update();
+    bool isOn();
     static void SpeedInterrupt();
 };
 

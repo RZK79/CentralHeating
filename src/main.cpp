@@ -3,9 +3,10 @@
 
 void setup() {
     Serial.begin(9600);
-    Controller::get()->setup();
+    controller = new Controller();
+    controller->setup();
 }
 
 void loop() {
-    Controller::get()->loop();
+    controller->loop();
 }

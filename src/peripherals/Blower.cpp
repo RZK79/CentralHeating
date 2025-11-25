@@ -78,3 +78,7 @@ void Blower::update() {
     digitalWrite(BLOWER, LOW);
     delayMicroseconds((unsigned int)(((100.0f - duty) / 100) * 10000.0f));
 }
+
+bool Blower::isOn() {
+    return speed != Blower::Speed::RPM_0 ? true : false;
+}

@@ -54,3 +54,7 @@ void Timer::reset() {
 bool Timer::isPaused() {
     return paused;
 }
+
+unsigned long Timer::getPassedMillis() {
+    return millis() - startMillis;
+}
