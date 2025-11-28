@@ -11,7 +11,7 @@ class NTC : public TemperatureSensor {
     uint32_t R = 10000; //second resistor from voltage divider
 public:
     NTC(int resistance, const uint8_t analogPin, uint16_t Bvalue = 3470);
-    float getTemperature();
+    float getTemperature() override;
 };
 
 #endif

@@ -35,7 +35,7 @@ public:
 
     bool isFeederOn();
 
-    virtual void onTime(Timer* timer);
+    virtual void onTime(Timer* timer) override;
 };
 
 #endif

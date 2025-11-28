@@ -7,7 +7,7 @@ class LoopTimer : public Timer, public TimerEventListener {
     float feederMultiplier;
 public:
     LoopTimer();
-    virtual void onTime(Timer* timer);
+    void onTime(Timer* timer) override;
 };
 
 #endif

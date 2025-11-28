@@ -11,6 +11,7 @@ public:
 
     void turnLighterOn();
     void turnLighterOff();
+    bool isLighterOn();
 
     void turnCentralHeatingPumpOn();
     void turnCentralHeatingPumpOff();

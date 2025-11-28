@@ -1,6 +1,7 @@
 #include "CurrentState.h"
 #include <Arduino.h>
 #include "peripherals/Blower.h"
+#include "Errors.h"
 
 CurrentState::CurrentState() {
     wifiConnected = false;
@@ -17,4 +18,5 @@ CurrentState::CurrentState() {
     centralHeatingTemperature = 0;
     hotWaterTemperature = 0;
     fumesTemperature = 0;
+    error = Errors::OK;
 }

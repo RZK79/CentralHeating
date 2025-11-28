@@ -7,7 +7,6 @@ Relays::Relays() {
     pinMode(CO_PUMP, OUTPUT);
     pinMode(CWU_PUMP, OUTPUT);
     pinMode(LIGHTER, OUTPUT);
-
 }
 
 void Relays::turnOffAll() {
@@ -30,14 +29,6 @@ void Relays::turnLighterOff() {
     digitalWrite(LIGHTER, HIGH);
 }
 
-bool Relays::isCentralHeatingPumpOn() {
-    return (bool)digitalRead(CO_PUMP);
-}
-
-bool Relays::isHotWaterPumpOn() {
-    return (bool)digitalRead(CWU_PUMP);
-}
-
 void Relays::turnCentralHeatingPumpOn() {
     controller->getCurrentState()->isCentralHeatingPumpOn = true;
     digitalWrite(CO_PUMP, LOW);
@@ -58,3 +49,14 @@ void Relays::turnHotWaterPumpOff() {
     digitalWrite(CWU_PUMP, HIGH);
 }
 
+bool Relays::isLighterOn(){
+    return (bool)digitalRead(LIGHTER);
+}
+
+bool Relays::isCentralHeatingPumpOn() {
+    return (bool)digitalRead(CO_PUMP);
+}
+
+bool Relays::isHotWaterPumpOn() {
+    return (bool)digitalRead(CWU_PUMP);
+}

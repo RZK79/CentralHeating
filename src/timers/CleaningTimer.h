@@ -6,7 +6,7 @@
 class CleaningTimer : public Timer, public TimerEventListener {
 public:
     CleaningTimer();
-    virtual void onTime(Timer* timer);
+    void onTime(Timer* timer) override;
 };
 
 #endif

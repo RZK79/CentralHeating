@@ -11,7 +11,7 @@ public:
      * pin - used as chip select pin
      */
     ThermoCouple(const uint8_t pin);
-    float getTemperature();
+    float getTemperature() override;
 };
 
 #endif

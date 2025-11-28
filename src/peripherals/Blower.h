@@ -27,6 +27,7 @@ public:
     void stop();
     void setSpeed(Speed speed);
     Speed getSpeed();
+    const char* getSpeedAsString();
     void update();
     bool isOn();
     static void SpeedInterrupt();

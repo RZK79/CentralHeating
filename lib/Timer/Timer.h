@@ -10,7 +10,7 @@ class Timer{
   unsigned long timeout;
   unsigned long startMillis;
   bool paused;
-
+  
   vector<TimerEventListener*> listeners;
 public:
   Timer();
@@ -26,7 +26,6 @@ public:
   void resume();
   void reset();
   bool isPaused();
-  unsigned long getPassedMillis();
 };
 
 #endif

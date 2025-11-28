@@ -13,7 +13,7 @@
 #include "CurrentState.h"
 #include "SerialCommunication.h"
 
-class Controller {
+class Controller : public TimerEventListener{
 public:
     enum State {
         OFF,
@@ -35,6 +35,7 @@ private:
     Feeder* feeder;
     Blower* blower;
 
+    Timer* currentStateTimer;
     MainTimer* mainTimer;
     LoopTimer* loopTimer;
     CleaningTimer* cleaningTimer;
@@ -44,6 +45,7 @@ private:
     CurrentState* currentState;
 
     SerialCommunication* se;
+    uint32_t currentStateTime;    
 public:
     Controller();
 
@@ -53,6 +55,7 @@ public:
     void changeStateTo(State newState);
 
     Controller::State getState();
+    const char* getStateAsString();
     Feeder* getFeeder();
     Blower* getBlower();
     Relays* getRelays();
@@ -60,7 +63,9 @@ public:
     LoopTimer* getLoopTimer();
     CleaningTimer* getCleaningTimer();
     CurrentState* getCurrentState();
+    uint32_t getCurrentStateTime();
     void getSensorsData();
+    void onTime(Timer* timer) override;
 };
 
 extern Controller* controller;

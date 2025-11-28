@@ -20,15 +20,17 @@
 #define HOT_WATER_NTC       5000
 #define CENTRAL_HEATING_NTC 10000
 
-#define SECOND              (uint16_t)1000
-#define MINUTE              (uint16_t)60*SECOND
+#define SECOND_MILL         (uint32_t)1000
+#define MINUTE_MILL         (uint32_t)60*SECOND_MILL
+#define SECOND              (uint32_t)1
+#define MINUTE              (uint32_t)60*SECOND
 
 #define FIRING_UP_TIME      3*MINUTE
-#define STABILIZATION_TIME  3*MINUTE
-#define TO_CLEANING_TIME    60*MINUTE
-#define CLEANING_TIME       10*SECOND
-#define PREBLOW_TIME        5*SECOND
-#define PREFEED_TIME        5*SECOND
+#define STABILIZATION_TIME  2*MINUTE
+#define TO_CLEANING_TIME    60*MINUTE_MILL
+#define CLEANING_TIME       10*SECOND_MILL
+#define PREBLOW_TIME        5*SECOND_MILL
+#define PREFEED_TIME        5*SECOND_MILL
 
 #define FIRING_UP_MAX_TEMP  80
 #define FIRING_UP_TEMP_DIFF 10

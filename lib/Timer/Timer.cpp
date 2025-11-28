@@ -16,10 +16,11 @@ void Timer::update() {
     }
 
     if (millis() - startMillis >= timeout) {
-        if (!listeners.empty())
+        if (!listeners.empty()){
             for (uint8_t i = 0;i < listeners.size();i++) {
                 listeners[i]->onTime(this);
             }
+        }
         startMillis = millis();
     }
 }
@@ -30,7 +31,7 @@ void Timer::addEventListener(TimerEventListener* listener) {
 
 void Timer::start(unsigned long timoutToSet) {
     timeout = timoutToSet;
-    startMillis = millis();
+    reset();
     paused = false;
 }
 
@@ -53,8 +54,4 @@ void Timer::reset() {
 
 bool Timer::isPaused() {
     return paused;
-}
-
-unsigned long Timer::getPassedMillis() {
-    return millis() - startMillis;
 }

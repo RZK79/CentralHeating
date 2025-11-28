@@ -8,7 +8,7 @@ class MainTimer : public TimerEventListener, public Timer {
 public:
     MainTimer();
 
-    virtual void onTime(Timer* timer);
+    void onTime(Timer* timer) override;
 };
 
 #endif
