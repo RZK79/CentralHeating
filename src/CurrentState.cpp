@@ -10,8 +10,8 @@ CurrentState::CurrentState() {
     isCentralHeatingPumpOn = false;
     isHotWaterPumpOn = false;
     lighter = false;
-    feederTimeToSet = 1500;
-    feederPeriodToSet = 1000;
+    feederTimeToSet = 2000;
+    feederPeriodToSet = 3000;
     centralHeatingTemperatureToSet = 55;
     hotWaterTemperatureToSet = 45;
     blowerSpeedToSet = Blower::Speed::RPM_0;

@@ -5,13 +5,11 @@
 #include "Errors.h"
 
 Controller::Controller() {
-    setup();
+    se = new SerialCommunication();
+    currentState = new CurrentState();
 }
 
 void Controller::setup() {
-    // se = new SerialCommunication();
-
-    currentState = new CurrentState();
     state = State::OFF;
 
     fumesTemperature = new ThermoCouple(TC_CS);
@@ -133,9 +131,9 @@ void Controller::onTime(Timer* timer) {
     /**
      * FIRING UP SIMULATION
      */
-    if (state != State::OFF && currentState->fumesTemperature < 120) {
+    if (state != State::OFF && state != State::EXTINCTION && currentState->fumesTemperature < 120) {
         currentState->fumesTemperature++;
-    } else if (state == State::EXTINCTION && currentState->fumesTemperature > 50) {
+    } else if (state == State::EXTINCTION && currentState->fumesTemperature >= 50) {
         currentState->fumesTemperature--;
     } else {
         if (state == Controller::State::NORMAL) {
@@ -153,18 +151,18 @@ void Controller::onTime(Timer* timer) {
         }
     }
 
-    char buf[128];
-    sprintf(buf, "%03us ft:%02d cht:%02d hwt:%02d chp:%d hwp:%d l:%d %s state:%s",
-        (unsigned int)currentStateTime,
-        currentState->fumesTemperature,
-        currentState->centralHeatingTemperature,
-        currentState->hotWaterTemperature,
-        currentState->isCentralHeatingPumpOn,
-        currentState->isHotWaterPumpOn,
-        currentState->lighter,
-        blower->getSpeedAsString(),
-        getStateAsString());
-    Serial.println(buf);
+    // char buf[128];
+    // sprintf(buf, "%03us ft:%02d cht:%02d hwt:%02d chp:%d hwp:%d l:%d %s state:%s",
+    //     (unsigned int)currentStateTime,
+    //     currentState->fumesTemperature,
+    //     currentState->centralHeatingTemperature,
+    //     currentState->hotWaterTemperature,
+    //     currentState->isCentralHeatingPumpOn,
+    //     currentState->isHotWaterPumpOn,
+    //     currentState->lighter,
+    //     blower->getSpeedAsString(),
+    //     getStateAsString());
+    // Serial.println(buf);
 }
 
 Controller* controller = new Controller();

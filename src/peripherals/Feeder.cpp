@@ -1,9 +1,10 @@
 #include "Feeder.h"
 #include "Timer.h"
-
 #include "Config.h"
 
 Feeder::Feeder() {
+    feederOn = false;
+    
     feederTimer = new Timer();
     feederTimer->addEventListener(this);
 
@@ -16,6 +17,7 @@ void Feeder::update() {
 }
 
 void Feeder::prefeed() {
+    feederOn = true;
     currentState = Feeder::State::PREFEED;
     digitalWrite(FEEDER, LOW);
 }

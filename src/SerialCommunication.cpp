@@ -2,6 +2,7 @@
 #include "SerialCommunication.h"
 #include "CurrentState.h"
 #include "Controller.h"
+#include <avr/wdt.h>
 
 SerialCommunication::SerialCommunication() {
     init();
@@ -39,60 +40,59 @@ void SerialCommunication::serialEvent() {
 }
 
 void SerialCommunication::parseData(char* data) {
-    Serial.println(data);
-    if (strcmp(data, "ton") == 0) {
+    if (strncmp("ton", data, 3) == 0) {
         controller->getCurrentState()->isOn = true;
-    } else if (strcmp(data, "toff") == 0) {
+    } else if (strncmp("toff", data, 4) == 0) {
         controller->getCurrentState()->isOn = false;
-    } else if (strcmp(data, "sft") == 0) {
+    } else if (strncmp("sft", data, 3) == 0) {
         controller->getCurrentState()->feederTimeToSet = atoi(&data[3]);
-    } else if (strcmp(data, "sfp") == 0) {
+    } else if (strncmp("sfp", data, 3) == 0) {
         controller->getCurrentState()->feederPeriodToSet = atoi(&data[3]);
-    } else if (strcmp(data, "sb") == 0) {
+    } else if (strncmp("sbs", data, 3) == 0) {
         controller->getCurrentState()->blowerSpeedToSet = atoi(&data[2]);
-    } else if (strcmp(data, "sch") == 0) {
+    } else if (strncmp("scht", data, 4) == 0) {
         controller->getCurrentState()->centralHeatingTemperatureToSet = atoi(&data[3]);
-    } else if (strcmp(data, "shw") == 0) {
+    } else if (strncmp("shwt", data, 4) == 0) {
         controller->getCurrentState()->hotWaterTemperatureToSet = atoi(&data[3]);
-    } else if (strcmp(data, "gch") == 0) {
-        Serial.print("*gch");
+    } else if (strncmp("gcht", data, 4) == 0) {
+        Serial.print("*gcht");
         Serial.print(controller->getCurrentState()->centralHeatingTemperature);
         Serial.print("#");
-    } else if (strstr(data, "ghw") != NULL) {
-        Serial.print("*ghw");
+    } else if (strncmp("ghwt", data, 4) == 0) {
+        Serial.print("*ghwt");
         Serial.print(controller->getCurrentState()->hotWaterTemperature);
         Serial.print("#");
-    } else if (strstr(data, "gfu") != NULL) {
-        Serial.print("*gfu");
+    } else if (strncmp("gft", data, 3) == 0) {
+        Serial.print("*gft");
         Serial.print(controller->getCurrentState()->fumesTemperature);
         Serial.print("#");
-    } else if (strstr(data, "gs") != NULL) {
-        Serial.print("*gs");
-        Serial.print(controller->getState());
-        Serial.print("#");
-    } else if (strstr(data, "ghwp") != NULL) {
+    } else if (strncmp("ghwp", data, 4) == 0) {
         Serial.print("*ghwp");
         Serial.print(controller->getCurrentState()->isHotWaterPumpOn);
         Serial.print("#");
-    } else if (strcmp(data, "gchp") == 0) {
+    } else if (strncmp("gchp", data, 4) == 0) {
         Serial.print("*gchp");
         Serial.print(controller->getCurrentState()->isCentralHeatingPumpOn);
         Serial.print("#");
-    } else if (strcmp(data, "gl") == 0) {
+    } else if (strncmp("gl", data, 2) == 0) {
         Serial.print("*gl");
         Serial.print(controller->getCurrentState()->lighter);
         Serial.print("#");
-    } else if (strcmp(data, "gb") == 0) {
-        Serial.print("*gb");
-        Serial.print(controller->getBlower()->isOn());
+    } else if (strncmp("gbs", data, 3) == 0) {
+        Serial.print("*gbs");
+        Serial.print(controller->getBlower()->getSpeed());
         Serial.print("#");
-    } else if (strcmp(data, "gf") == 0) {
+    } else if (strncmp("gf", data, 2) == 0) {
         Serial.print("*gf");
         Serial.print(controller->getFeeder()->isFeederOn());
         Serial.print("#");
-    } else if (strcmp(data, "error") == 0) {
+    } else if (strncmp("error", data, 5) == 0) {
         Serial.print("*error");
         Serial.print(controller->getCurrentState()->error);
         Serial.print("#");
+    } else if (strncmp("reset", data, 5) == 0) {
+        wdt_disable();
+        wdt_enable(WDTO_15MS);
+        while (true) {}
     }
 }

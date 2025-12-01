@@ -4,7 +4,11 @@
 #include "Timer.h"
 
 class LoopTimer : public Timer, public TimerEventListener {
-    float feederMultiplier;
+    void startFiringUpPreblow();
+    void startStabilization();
+    void firingUpTimeout();
+    void startExtinction();
+    void off();
 public:
     LoopTimer();
     void onTime(Timer* timer) override;
