@@ -14,7 +14,7 @@ CurrentState::CurrentState() {
     feederPeriodToSet = 3000;
     centralHeatingTemperatureToSet = 55;
     hotWaterTemperatureToSet = 45;
-    blowerSpeedToSet = Blower::Speed::RPM_0;
+    blowerSpeedToSet = BlowerSpeed::RPM_0;
     centralHeatingTemperature = 0;
     hotWaterTemperature = 0;
     fumesTemperature = 0;

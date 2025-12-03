@@ -10,7 +10,7 @@ LoopTimer::LoopTimer() {
 }
 
 void LoopTimer::startFiringUpPreblow() {
-    controller->getBlower()->setSpeed(Blower::Speed::RPM_3600);
+    controller->getBlower()->setSpeed(BlowerSpeed::RPM_3600);
     controller->getBlower()->start();
     controller->getMainTimer()->start(PREBLOW_TIME);
     controller->changeStateTo(Controller::State::FIRING_UP_PREBLOW);
@@ -18,7 +18,7 @@ void LoopTimer::startFiringUpPreblow() {
 
 void LoopTimer::startStabilization() {
     controller->getRelays()->turnLighterOff();
-    controller->getBlower()->setSpeed(Blower::Speed::RPM_2500);
+    controller->getBlower()->setSpeed(BlowerSpeed::RPM_2500);
     controller->getFeeder()->setFeedTime(controller->getCurrentState()->feederTimeToSet);
     controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
     controller->getMainTimer()->start(STABILIZATION_TIME);
@@ -37,7 +37,7 @@ void LoopTimer::firingUpTimeout() {
 void LoopTimer::startExtinction() {
     controller->getRelays()->turnOffAll();
     controller->getFeeder()->stop();
-    controller->getBlower()->setSpeed(Blower::Speed::RPM_3600);
+    controller->getBlower()->setSpeed(BlowerSpeed::RPM_3600);
     controller->getMainTimer()->stop();
     controller->getCleaningTimer()->stop();
     controller->changeStateTo(Controller::State::EXTINCTION);
