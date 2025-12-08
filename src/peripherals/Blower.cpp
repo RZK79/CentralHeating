@@ -36,11 +36,11 @@ void Blower::stop() {
     setSpeed(BlowerSpeed::RPM_0);
 }
 
-void Blower::setSpeed(BlowerSpeed _speed) {
+void Blower::setSpeed(int _speed) {
     speed = _speed;
 }
 
-BlowerSpeed Blower::getSpeed() {
+int Blower::getSpeed() {
     return speed;
 }
 

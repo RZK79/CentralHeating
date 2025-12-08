@@ -6,7 +6,7 @@
 
 class Blower {
 private:
-    BlowerSpeed speed;
+    int speed;
     static int currentRPS;
     static int time;
     static int currentRPM;
@@ -15,8 +15,8 @@ public:
     Blower();
     void start();
     void stop();
-    void setSpeed(BlowerSpeed speed);
-    BlowerSpeed getSpeed();
+    void setSpeed(int speed);
+    int getSpeed();
     void update();
     bool isOn();
     static void SpeedInterrupt();

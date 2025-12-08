@@ -48,8 +48,12 @@ void SerialCommunication::parseData(char* data) {
         controller->getCurrentState()->feederTimeToSet = atoi(&data[3]);
     } else if (strncmp("sfp", data, 3) == 0) {
         controller->getCurrentState()->feederPeriodToSet = atoi(&data[3]);
-    } else if (strncmp("sbs", data, 3) == 0) {
-        controller->getCurrentState()->blowerSpeedToSet = atoi(&data[2]);
+    } else if (strncmp("sbsfu", data, 5) == 0) {
+        controller->getCurrentState()->blowerSpeedToSetFiringUp = atoi(&data[4]);
+    } else if (strncmp("sbss", data, 4) == 0) {
+        controller->getCurrentState()->blowerSpeedToSetStabilization = atoi(&data[4]);
+    } else if (strncmp("sbsn", data, 4) == 0) {
+        controller->getCurrentState()->blowerSpeedToSetNormal = atoi(&data[4]);
     } else if (strncmp("scht", data, 4) == 0) {
         controller->getCurrentState()->centralHeatingTemperatureToSet = atoi(&data[3]);
     } else if (strncmp("shwt", data, 4) == 0) {

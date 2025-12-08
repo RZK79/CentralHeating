@@ -19,7 +19,9 @@ public:
     int centralHeatingTemperatureToSet;
     int hotWaterTemperatureToSet;
 
-    int blowerSpeedToSet;
+    int blowerSpeedToSetFiringUp;
+    int blowerSpeedToSetStabilization;
+    int blowerSpeedToSetNormal;
 
     int centralHeatingTemperature;
     int hotWaterTemperature;

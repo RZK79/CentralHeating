@@ -9,7 +9,7 @@ MainTimer::MainTimer() {
 }
 
 void MainTimer::startFiringUp() {
-    controller->getBlower()->setSpeed(BlowerSpeed::RPM_2500);
+    controller->getBlower()->setSpeed(controller->getCurrentState()->blowerSpeedToSetFiringUp);
     controller->getFeeder()->setFeedTime(1.5f * controller->getCurrentState()->feederTimeToSet);
     controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
     controller->getFeeder()->start();
@@ -35,7 +35,7 @@ void MainTimer::stabilizationTimeout() {
 }
 
 void MainTimer::startNormal() {
-    controller->getBlower()->setSpeed(BlowerSpeed::RPM_2000);
+    controller->getBlower()->setSpeed(controller->getCurrentState()->blowerSpeedToSetNormal);
     controller->getFeeder()->setFeedTime(controller->getCurrentState()->feederTimeToSet);
     controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
     controller->getCleaningTimer()->start(TO_CLEANING_TIME);

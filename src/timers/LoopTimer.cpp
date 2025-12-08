@@ -18,7 +18,7 @@ void LoopTimer::startFiringUpPreblow() {
 
 void LoopTimer::startStabilization() {
     controller->getRelays()->turnLighterOff();
-    controller->getBlower()->setSpeed(BlowerSpeed::RPM_2500);
+    controller->getBlower()->setSpeed(controller->getCurrentState()->blowerSpeedToSetStabilization);
     controller->getFeeder()->setFeedTime(controller->getCurrentState()->feederTimeToSet);
     controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
     controller->getMainTimer()->start(STABILIZATION_TIME);
