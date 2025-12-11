@@ -49,7 +49,7 @@ void SerialCommunication::parseData(char* data) {
     } else if (strncmp("sfp", data, 3) == 0) {
         controller->getCurrentState()->feederPeriodToSet = atoi(&data[3]);
     } else if (strncmp("sbsfu", data, 5) == 0) {
-        controller->getCurrentState()->blowerSpeedToSetFiringUp = atoi(&data[4]);
+        controller->getCurrentState()->blowerSpeedToSetFiringUp = atoi(&data[5]);
     } else if (strncmp("sbss", data, 4) == 0) {
         controller->getCurrentState()->blowerSpeedToSetStabilization = atoi(&data[4]);
     } else if (strncmp("sbsn", data, 4) == 0) {
