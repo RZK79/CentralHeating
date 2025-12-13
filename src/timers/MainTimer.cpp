@@ -56,6 +56,5 @@ void MainTimer::onTime(Timer* timer) {
                 startNormal();
             }
         }
-        controller->getSensorsData();
     }
 }

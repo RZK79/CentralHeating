@@ -28,8 +28,6 @@ void Controller::setup() {
     loopTimer = new LoopTimer();
     currentStateTimer = new Timer();
     currentStateTimer->addEventListener(this);
-
-    currentState->isOn = false;
 }
 
 void Controller::loop() {
@@ -43,9 +41,9 @@ void Controller::loop() {
 }
 
 void Controller::getSensorsData() {
-    // currentState->fumesTemperature = fumesTemperature->getTemperature();
-    // currentState->centralHeatingTemperature = boilerTemperature->getTemperature();
-    // currentState->hotWaterTemperature = hotWaterTankTemperature->getTemperature();
+    currentState->fumesTemperature = fumesTemperature->getTemperature();
+    currentState->centralHeatingTemperature = boilerTemperature->getTemperature();
+    currentState->hotWaterTemperature = hotWaterTankTemperature->getTemperature();
 }
 
 void Controller::changeStateTo(State newState) {
@@ -131,25 +129,25 @@ void Controller::onTime(Timer* timer) {
     /**
      * FIRING UP SIMULATION
      */
-    if (state != State::OFF && state != State::EXTINCTION && currentState->fumesTemperature < 120) {
-        currentState->fumesTemperature++;
-    } else if (state == State::EXTINCTION && currentState->fumesTemperature >= 50) {
-        currentState->fumesTemperature--;
-    } else {
-        if (state == Controller::State::NORMAL) {
-            if (currentState->fumesTemperature == 120) {
-                if (currentState->centralHeatingTemperature < currentState->centralHeatingTemperatureToSet) {
-                    currentState->centralHeatingTemperature++;
-                }
+    // if (state != State::OFF && state != State::EXTINCTION && currentState->fumesTemperature < 120) {
+    //     currentState->fumesTemperature++;
+    // } else if (state == State::EXTINCTION && currentState->fumesTemperature >= 50) {
+    //     currentState->fumesTemperature--;
+    // } else {
+    //     if (state == Controller::State::NORMAL) {
+    //         if (currentState->fumesTemperature == 120) {
+    //             if (currentState->centralHeatingTemperature < currentState->centralHeatingTemperatureToSet) {
+    //                 currentState->centralHeatingTemperature++;
+    //             }
 
-                if (currentState->isHotWaterPumpOn) {
-                    if (currentState->hotWaterTemperature < currentState->hotWaterTemperatureToSet) {
-                        currentState->hotWaterTemperature++;
-                    }
-                }
-            }
-        }
-    }
+    //             if (currentState->isHotWaterPumpOn) {
+    //                 if (currentState->hotWaterTemperature < currentState->hotWaterTemperatureToSet) {
+    //                     currentState->hotWaterTemperature++;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     // char buf[128];
     // sprintf(buf, "%03us ft:%02d cht:%02d hwt:%02d chp:%d hwp:%d l:%d %s state:%s",

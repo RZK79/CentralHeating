@@ -6,7 +6,7 @@
 CurrentState::CurrentState() {
     wifiConnected = false;
 
-    isOn = false;;
+    isOn = false;
     isCentralHeatingPumpOn = false;
     isHotWaterPumpOn = false;
     lighter = false;

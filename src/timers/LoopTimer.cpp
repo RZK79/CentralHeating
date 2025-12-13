@@ -50,7 +50,10 @@ void LoopTimer::off() {
 
 void LoopTimer::onTime(Timer* timer) {
     if (controller->getState() == Controller::State::OFF) {
-        if (controller->getCurrentState()->isOn) {
+        if (controller->getCurrentState()->isOn &&
+            controller->getCurrentState()->fumesTemperature < FIRING_UP_MAX_TEMP &&
+            controller->getCurrentState()->centralHeatingTemperature < MINIMAL_TEMP_FOR_CH
+            ) {
             startFiringUpPreblow();
         }
     } else if (controller->getState() == Controller::State::FIRING_UP) {
@@ -60,7 +63,7 @@ void LoopTimer::onTime(Timer* timer) {
             firingUpTimeout();
         }
     } else if (controller->getState() == Controller::State::NORMAL) {
-        if (controller->getCurrentState()->centralHeatingTemperature > 40) {
+        if (controller->getCurrentState()->centralHeatingTemperature > MINIMAL_TEMP_FOR_CH) {
             if (controller->getCurrentState()->centralHeatingTemperature > controller->getCurrentState()->centralHeatingTemperatureToSet) {
                 controller->getRelays()->turnCentralHeatingPumpOff();
             } else {
@@ -68,7 +71,7 @@ void LoopTimer::onTime(Timer* timer) {
             }
         }
 
-        if (controller->getCurrentState()->centralHeatingTemperature > 50) {
+        if (controller->getCurrentState()->centralHeatingTemperature > MINIMAL_TEMP_FOR_HW) {
             if (controller->getCurrentState()->hotWaterTemperature < controller->getCurrentState()->hotWaterTemperatureToSet) {
                 controller->getRelays()->turnHotWaterPumpOn();
             } else {
@@ -76,7 +79,7 @@ void LoopTimer::onTime(Timer* timer) {
             }
         }
 
-        if (controller->getCurrentState()->fumesTemperature > 200) {
+        if (controller->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP) {
             if (controller->getCurrentState()->centralHeatingTemperature < controller->getCurrentState()->centralHeatingTemperatureToSet ||
                 controller->getCurrentState()->hotWaterTemperature < controller->getCurrentState()->hotWaterTemperatureToSet) {
                 controller->getFeeder()->setFeedTime(0.8f * controller->getCurrentState()->feederTimeToSet);
@@ -84,12 +87,14 @@ void LoopTimer::onTime(Timer* timer) {
             }
         }
     } else if (controller->getState() == Controller::State::EXTINCTION) {
-        if (controller->getCurrentState()->fumesTemperature < 50) {
+        if (controller->getCurrentState()->fumesTemperature < FUMES_MIN_TEMP) {
             off();
         }
     }
 
-    if (controller->getState() != Controller::State::OFF && !controller->getCurrentState()->isOn) {
+    if (controller->getState() != Controller::State::OFF && controller->getCurrentState()->isOn == false) {
         startExtinction();
     }
+
+    controller->getSensorsData();
 }
