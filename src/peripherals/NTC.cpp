@@ -19,3 +19,20 @@ float NTC::getTemperature() {
 
     return (1.0f / (X + Y)) - 273.15f;
 }
+
+int NTC::ToValue(int type) {
+    switch (type) {
+        case NTC_5k:
+            return 5000;
+
+        default:
+        case NTC_10k:
+            return 10000;
+
+        case NTC_15k:
+            return 15000;
+            
+        case NTC_20k:
+            return 20000;
+    }
+}

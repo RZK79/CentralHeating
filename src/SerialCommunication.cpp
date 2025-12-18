@@ -3,6 +3,8 @@
 #include "CurrentState.h"
 #include "Controller.h"
 #include <avr/wdt.h>
+#include "peripherals/NTCType.h"
+#include "Errors.h"
 
 SerialCommunication::SerialCommunication() {
     init();
@@ -55,9 +57,13 @@ void SerialCommunication::parseData(char* data) {
     } else if (strncmp("sbsn", data, 4) == 0) {
         controller->getCurrentState()->blowerSpeedToSetNormal = atoi(&data[4]);
     } else if (strncmp("scht", data, 4) == 0) {
-        controller->getCurrentState()->centralHeatingTemperatureToSet = atoi(&data[3]);
+        controller->getCurrentState()->centralHeatingTemperatureToSet = atoi(&data[4]);
     } else if (strncmp("shwt", data, 4) == 0) {
-        controller->getCurrentState()->hotWaterTemperatureToSet = atoi(&data[3]);
+        controller->getCurrentState()->hotWaterTemperatureToSet = atoi(&data[4]);
+    } else if (strncmp("sntcch", data, 6) == 0) {
+        controller->getCurrentState()->NTCch = atoi(&data[6]);
+    } else if (strncmp("sntchw", data, 6) == 0) {
+        controller->getCurrentState()->NTChw = atoi(&data[6]);
     } else if (strncmp("gcht", data, 4) == 0) {
         Serial.print("*gcht");
         Serial.print(controller->getCurrentState()->centralHeatingTemperature);
@@ -94,6 +100,8 @@ void SerialCommunication::parseData(char* data) {
         Serial.print("*error");
         Serial.print(controller->getCurrentState()->error);
         Serial.print("#");
+    }else if(strncmp("reseterror", data, 10) == 0){
+        controller->getCurrentState()->error = Errors::OK;
     } else if (strncmp("reset", data, 5) == 0) {
         wdt_disable();
         wdt_enable(WDTO_15MS);

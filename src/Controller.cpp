@@ -13,8 +13,8 @@ void Controller::setup() {
     state = State::OFF;
 
     fumesTemperature = new ThermoCouple(TC_CS);
-    boilerTemperature = new NTC(10000, CO_TEMP);
-    hotWaterTankTemperature = new NTC(5000, CWU_TEMP);
+    boilerTemperature = new NTC(NTC::ToValue(currentState->NTCch), CO_TEMP);
+    hotWaterTankTemperature = new NTC(NTC::ToValue(currentState->NTChw), CWU_TEMP);
 
     feeder = new Feeder();
     feeder->stop();

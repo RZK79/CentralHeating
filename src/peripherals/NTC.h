@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "TemperatureSensor.h"
+#include "NTCType.h"
 
 class NTC : public TemperatureSensor {
     uint32_t RT0;       //thermistor resistance in 25 celsius degrees
@@ -12,6 +13,7 @@ class NTC : public TemperatureSensor {
 public:
     NTC(int resistance, const uint8_t analogPin, uint16_t Bvalue = 3470);
     float getTemperature() override;
+    static int ToValue(int type);
 };
 
 #endif

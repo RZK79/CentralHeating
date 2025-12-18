@@ -4,7 +4,7 @@
 class CurrentState {
 public:
     CurrentState();
-    
+
     bool wifiConnected;
 
     bool isOn;
@@ -26,6 +26,9 @@ public:
     int centralHeatingTemperature;
     int hotWaterTemperature;
     int fumesTemperature;
+
+    int NTCch;
+    int NTChw;
 
     int error;
 };
