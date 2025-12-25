@@ -5,34 +5,51 @@
 
 enum BlowerSpeed {
     RPM_0,
-    RPM_1000,
-    RPM_1500,
-    RPM_2000,
-    RPM_2500,
-    RPM_3000,
-    RPM_3600
+    RPM_10,
+    RPM_20,
+    RPM_30,
+    RPM_40,
+    RPM_50,
+    RPM_60,
+    RPM_70,
+    RPM_80,
+    RPM_90,
+    RPM_100
 };
 
 extern inline int BlowerSpeedToValue(BlowerSpeed speed) {
     switch (speed) {
-        case BlowerSpeed::RPM_3600:
-            return 3600;
+        case BlowerSpeed::RPM_100:
+            return 100;
 
-        case BlowerSpeed::RPM_3000:
-            return 3000;
+        case BlowerSpeed::RPM_90:
+            return 90;
 
-        case BlowerSpeed::RPM_2500:
-            return 2500;
+        case BlowerSpeed::RPM_80:
+            return 80;
 
-        case BlowerSpeed::RPM_2000:
-            return 2000;
+        case BlowerSpeed::RPM_70:
+            return 70;
 
-        case BlowerSpeed::RPM_1500:
-            return 1500;
+        case BlowerSpeed::RPM_60:
+            return 60;
 
-        case BlowerSpeed::RPM_1000:
-            return 1000;
+        case BlowerSpeed::RPM_50:
+            return 50;
 
+        case BlowerSpeed::RPM_40:
+            return 40;
+
+        case BlowerSpeed::RPM_30:
+            return 30;
+
+        case BlowerSpeed::RPM_20:
+            return 20;
+
+        case BlowerSpeed::RPM_10:
+            return 10;
+
+        default:
         case BlowerSpeed::RPM_0:
             return 0;
     }
@@ -40,26 +57,38 @@ extern inline int BlowerSpeedToValue(BlowerSpeed speed) {
 
 extern inline const char* BlowerSpeedToString(uint8_t speed) {
     switch (speed) {
-        case BlowerSpeed::RPM_3600:
-            return "3600";
+        case BlowerSpeed::RPM_100:
+            return "100%";
 
-        case BlowerSpeed::RPM_3000:
-            return "3000";
+        case BlowerSpeed::RPM_90:
+            return "90%";
 
-        case BlowerSpeed::RPM_2500:
-            return "2500";
+        case BlowerSpeed::RPM_80:
+            return "80%";
 
-        case BlowerSpeed::RPM_2000:
-            return "2000";
+        case BlowerSpeed::RPM_70:
+            return "70%";
 
-        case BlowerSpeed::RPM_1500:
-            return "1500";
+        case BlowerSpeed::RPM_60:
+            return "60%";
 
-        case BlowerSpeed::RPM_1000:
-            return "1000";
+        case BlowerSpeed::RPM_50:
+            return "50%";
+
+        case BlowerSpeed::RPM_40:
+            return "40%";
+
+        case BlowerSpeed::RPM_30:
+            return "30%";
+
+        case BlowerSpeed::RPM_20:
+            return "20%";
+
+        case BlowerSpeed::RPM_10:
+            return "10%";
 
         case BlowerSpeed::RPM_0:
-            return "0";
+            return "0%";
     }
 }
 

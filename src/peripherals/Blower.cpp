@@ -48,23 +48,35 @@ void Blower::update() {
     float duty = 0;
 
     switch (speed) {
-        case BlowerSpeed::RPM_3600:
+        case BlowerSpeed::RPM_100:
             duty = 100;
             break;
-        case BlowerSpeed::RPM_3000:
+        case BlowerSpeed::RPM_90:
+            duty = 90.0f;
+            break;
+        case BlowerSpeed::RPM_80:
+            duty = 80.0f;
+            break;
+        case BlowerSpeed::RPM_70:
             duty = 70.0f;
             break;
-        case BlowerSpeed::RPM_2500:
+        case BlowerSpeed::RPM_60:
+            duty = 60.0f;
+            break;
+        case BlowerSpeed::RPM_50:
             duty = 50.0f;
             break;
-        case BlowerSpeed::RPM_2000:
-            duty = 26.5f;
+        case BlowerSpeed::RPM_40:
+            duty = 40.0f;
             break;
-        case BlowerSpeed::RPM_1500:
-            duty = 13.0f;
+        case BlowerSpeed::RPM_30:
+            duty = 30.0f;
             break;
-        case BlowerSpeed::RPM_1000:
-            duty = 9.5f;
+        case BlowerSpeed::RPM_20:
+            duty = 20.0f;
+            break;
+        case BlowerSpeed::RPM_10:
+            duty = 10.0f;
             break;
 
         case BlowerSpeed::RPM_0:

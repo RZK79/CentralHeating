@@ -125,7 +125,7 @@ uint32_t Controller::getCurrentStateTime() {
 
 void Controller::onTime(Timer* timer) {
     currentStateTime++;
-
+    getSensorsData();
     /**
      * FIRING UP SIMULATION
      */

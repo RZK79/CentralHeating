@@ -8,14 +8,14 @@ CleaningTimer::CleaningTimer() {
 
 void CleaningTimer::onTime(Timer* timer) {
     if (controller->getState() == Controller::State::CLEANING) {
-        controller->getBlower()->setSpeed(BlowerSpeed::RPM_1500);
+        controller->getBlower()->setSpeed(controller->getCurrentState()->blowerSpeedToSetNormal);
         controller->getFeeder()->setFeedTime(controller->getCurrentState()->feederTimeToSet);
         controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
         controller->getFeeder()->start();
         controller->changeStateTo(Controller::State::NORMAL);
         start(TO_CLEANING_TIME);
     } else {
-        controller->getBlower()->setSpeed(BlowerSpeed::RPM_3600);
+        controller->getBlower()->setSpeed(BlowerSpeed::RPM_100);
         controller->getFeeder()->stop();
         controller->changeStateTo(Controller::State::CLEANING);
         start(CLEANING_TIME);

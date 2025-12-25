@@ -10,7 +10,7 @@ LoopTimer::LoopTimer() {
 }
 
 void LoopTimer::startFiringUpPreblow() {
-    controller->getBlower()->setSpeed(BlowerSpeed::RPM_3600);
+    controller->getBlower()->setSpeed(BlowerSpeed::RPM_50);
     controller->getBlower()->start();
     controller->getMainTimer()->start(PREBLOW_TIME);
     controller->changeStateTo(Controller::State::FIRING_UP_PREBLOW);
@@ -19,7 +19,7 @@ void LoopTimer::startFiringUpPreblow() {
 void LoopTimer::startStabilization() {
     controller->getRelays()->turnLighterOff();
     controller->getBlower()->setSpeed(controller->getCurrentState()->blowerSpeedToSetStabilization);
-    controller->getFeeder()->setFeedTime(controller->getCurrentState()->feederTimeToSet);
+    controller->getFeeder()->setFeedTime(0.7f * controller->getCurrentState()->feederTimeToSet);
     controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
     controller->getMainTimer()->start(STABILIZATION_TIME);
     controller->changeStateTo(Controller::State::STABILIZATION);
@@ -37,7 +37,7 @@ void LoopTimer::firingUpTimeout() {
 void LoopTimer::startExtinction() {
     controller->getRelays()->turnOffAll();
     controller->getFeeder()->stop();
-    controller->getBlower()->setSpeed(BlowerSpeed::RPM_3600);
+    controller->getBlower()->setSpeed(BlowerSpeed::RPM_50);
     controller->getMainTimer()->stop();
     controller->getCleaningTimer()->stop();
     controller->changeStateTo(Controller::State::EXTINCTION);
@@ -45,14 +45,14 @@ void LoopTimer::startExtinction() {
 
 void LoopTimer::off() {
     controller->getBlower()->stop();
+    controller->getFeeder()->stop();
     controller->changeStateTo(Controller::State::OFF);
 }
 
 void LoopTimer::onTime(Timer* timer) {
     if (controller->getState() == Controller::State::OFF) {
         if (controller->getCurrentState()->isOn &&
-            controller->getCurrentState()->fumesTemperature < FIRING_UP_MAX_TEMP &&
-            controller->getCurrentState()->centralHeatingTemperature < MINIMAL_TEMP_FOR_CH
+            controller->getCurrentState()->fumesTemperature < FIRING_UP_MAX_TEMP && controller->getCurrentState()->centralHeatingTemperature < MINIMAL_TEMP_FOR_CH
             ) {
             startFiringUpPreblow();
         }
@@ -95,6 +95,4 @@ void LoopTimer::onTime(Timer* timer) {
     if (controller->getState() != Controller::State::OFF && controller->getCurrentState()->isOn == false) {
         startExtinction();
     }
-
-    controller->getSensorsData();
 }
