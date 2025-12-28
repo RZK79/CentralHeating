@@ -1,17 +1,29 @@
-#include "Config.h"
 #include "Controller.h"
+#include "Config.h"
+#include "Errors.h"
 #include "SerialCommunication.h"
 #include "peripherals/Relays.h"
-#include "Errors.h"
 
-Controller::Controller() {
+Controller* Controller::instance = nullptr;
+
+Controller* Controller::get()
+{
+    if (instance == nullptr) {
+        instance = new Controller();
+    }
+
+    return instance;
+}
+
+Controller::Controller()
+{
     se = new SerialCommunication();
     currentState = new CurrentState();
 }
 
-void Controller::setup() {
+void Controller::setup()
+{
     state = State::OFF;
-
     fumesTemperature = new ThermoCouple(TC_CS);
     boilerTemperature = new NTC(NTC::ToValue(currentState->NTCch), CO_TEMP);
     hotWaterTankTemperature = new NTC(NTC::ToValue(currentState->NTChw), CWU_TEMP);
@@ -30,100 +42,118 @@ void Controller::setup() {
     currentStateTimer->addEventListener(this);
 }
 
-void Controller::loop() {
+void Controller::loop()
+{
     feeder->update();
     mainTimer->update();
     cleaningTimer->update();
     loopTimer->update();
     blower->update();
     currentStateTimer->update();
-    se->serialEvent();
 }
 
-void Controller::getSensorsData() {
+SerialCommunication* Controller::getSerialCommunication(){
+    return se;
+}
+
+void Controller::getSensorsData()
+{
     currentState->fumesTemperature = fumesTemperature->getTemperature();
     currentState->centralHeatingTemperature = boilerTemperature->getTemperature();
     currentState->hotWaterTemperature = hotWaterTankTemperature->getTemperature();
 }
 
-void Controller::changeStateTo(State newState) {
+void Controller::changeStateTo(State newState)
+{
     currentStateTime = 0;
     currentStateTimer->start(SECOND_MILL);
     state = newState;
 }
 
-Controller::State Controller::getState() {
+Controller::State Controller::getState()
+{
     return state;
 }
 
-const char* Controller::getStateAsString() {
+const char* Controller::getStateAsString()
+{
     switch (state) {
-        default:
-        case OFF:
-            return "OFF";
+    default:
+    case OFF:
+        return "OFF";
 
-        case FIRING_UP_PREBLOW:
-            return "FIRING_UP_PREBLOW";
+    case FIRING_UP_PREBLOW:
+        return "FIRING_UP_PREBLOW";
 
-        case FIRING_UP_PREBLOW_DONE:
-            return "FIRING_UP_PREBLOW_DONE";
+    case FIRING_UP_PREBLOW_DONE:
+        return "FIRING_UP_PREBLOW_DONE";
 
-        case PREFEED:
-            return "PREFEED";
+    case PREFEED:
+        return "PREFEED";
 
-        case PREFEED_DONE:
-            return "PREFEED_DONE";
+    case PREFEED_DONE:
+        return "PREFEED_DONE";
 
-        case FIRING_UP:
-            return "FIRING_UP";
+    case FIRING_UP:
+        return "FIRING_UP";
 
-        case STABILIZATION:
-            return "STABILIZATION";
+    case STABILIZATION:
+        return "STABILIZATION";
 
-        case NORMAL:
-            return "NORMAL";
+    case NORMAL:
+        return "NORMAL";
 
-        case CLEANING:
-            return "CLEANING";
+    case CLEANING:
+        return "CLEANING";
 
-        case EXTINCTION:
-            return "EXTINCTION";
+
+    case EXTINCTION:
+        return "EXTINCTION";
     }
 }
 
-Feeder* Controller::getFeeder() {
+Feeder* Controller::getFeeder()
+{
     return feeder;
 }
 
-Blower* Controller::getBlower() {
+Blower* Controller::getBlower()
+{
     return blower;
 }
 
-MainTimer* Controller::getMainTimer() {
+MainTimer* Controller::getMainTimer()
+{
     return mainTimer;
 }
 
-LoopTimer* Controller::getLoopTimer() {
+LoopTimer* Controller::getLoopTimer()
+{
     return loopTimer;
 }
 
-CleaningTimer* Controller::getCleaningTimer() {
+CleaningTimer* Controller::getCleaningTimer()
+{
     return cleaningTimer;
 }
 
-CurrentState* Controller::getCurrentState() {
+CurrentState* Controller::getCurrentState()
+{
     return currentState;
 }
 
-Relays* Controller::getRelays() {
+Relays* Controller::getRelays()
+{
     return relays;
 }
 
-uint32_t Controller::getCurrentStateTime() {
+uint32_t Controller::getCurrentStateTime()
+{
     return currentStateTime;
 }
 
-void Controller::onTime(Timer* timer) {
+void Controller::onTime(Timer* timer)
+{
     currentStateTime++;
     getSensorsData();
     /**
@@ -162,5 +192,3 @@ void Controller::onTime(Timer* timer) {
     //     getStateAsString());
     // Serial.println(buf);
 }
-
-Controller* controller = new Controller();

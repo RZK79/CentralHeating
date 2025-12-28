@@ -2,10 +2,13 @@
 #include "Controller.h"
 
 void setup() {
-    Serial.begin(9600);
-    controller->setup();
+    Controller::get()->setup();
 }
 
 void loop() {
-    controller->loop();
+    Controller::get()->loop();
+}
+
+void serialEvent(){
+    Controller::get()->getSerialCommunication()->serialEvent();
 }

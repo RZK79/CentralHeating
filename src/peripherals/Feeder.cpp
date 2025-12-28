@@ -48,14 +48,14 @@ void Feeder::onTime(Timer* timer) {
         case Feeder::State::FEED:
             feederOn = true;
             digitalWrite(FEEDER, LOW);
-            feederTimer->start(periodTime);
+            feederTimer->start(feedTime);
             currentState = Feeder::State::PERIOD;
             break;
 
         case Feeder::State::PERIOD:
             feederOn = false;
             digitalWrite(FEEDER, HIGH);
-            feederTimer->start(feedTime);
+            feederTimer->start(periodTime);
             currentState = Feeder::State::FEED;
             break;
 

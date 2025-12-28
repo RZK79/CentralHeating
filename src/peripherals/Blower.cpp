@@ -20,10 +20,10 @@ Blower::Blower() {
     stop();
 
     pinMode(BLOWER, OUTPUT);
-    pinMode(BLOWER_ENCODER, INPUT);
+    // pinMode(BLOWER_ENCODER, INPUT);
     digitalWrite(BLOWER, HIGH);
 
-    attachInterrupt(INT0, Blower::SpeedInterrupt, RISING);
+    // attachInterrupt(INT0, Blower::SpeedInterrupt, RISING);
 }
 
 void Blower::start() {

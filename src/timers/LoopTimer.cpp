@@ -1,98 +1,102 @@
 #include "LoopTimer.h"
+#include "Config.h"
 #include "Controller.h"
 #include "CurrentState.h"
-#include "Config.h"
 #include "Errors.h"
 
-LoopTimer::LoopTimer() {
+LoopTimer::LoopTimer()
+{
     addEventListener(this);
     start(1000);
 }
 
-void LoopTimer::startFiringUpPreblow() {
-    controller->getBlower()->setSpeed(BlowerSpeed::RPM_50);
-    controller->getBlower()->start();
-    controller->getMainTimer()->start(PREBLOW_TIME);
-    controller->changeStateTo(Controller::State::FIRING_UP_PREBLOW);
+void LoopTimer::startFiringUpPreblow()
+{
+    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_50);
+    Controller::get()->getBlower()->start();
+    Controller::get()->getMainTimer()->start(PREBLOW_TIME);
+    Controller::get()->changeStateTo(Controller::State::FIRING_UP_PREBLOW);
 }
 
-void LoopTimer::startStabilization() {
-    controller->getRelays()->turnLighterOff();
-    controller->getBlower()->setSpeed(controller->getCurrentState()->blowerSpeedToSetStabilization);
-    controller->getFeeder()->setFeedTime(0.7f * controller->getCurrentState()->feederTimeToSet);
-    controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
-    controller->getMainTimer()->start(STABILIZATION_TIME);
-    controller->changeStateTo(Controller::State::STABILIZATION);
+void LoopTimer::startStabilization()
+{
+    Controller::get()->getRelays()->turnLighterOff();
+    Controller::get()->getBlower()->setSpeed(Controller::get()->getCurrentState()->blowerSpeedToSetStabilization);
+    Controller::get()->getFeeder()->setFeedTime(0.7f * Controller::get()->getCurrentState()->feederTimeToSet);
+    Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
+    Controller::get()->getMainTimer()->start(STABILIZATION_TIME);
+    Controller::get()->changeStateTo(Controller::State::STABILIZATION);
 }
 
-void LoopTimer::firingUpTimeout() {
-    controller->getRelays()->turnLighterOff();
-    controller->getBlower()->stop();
-    controller->getFeeder()->stop();
-    controller->getCurrentState()->error = Errors::FIRING_UP_TIMEOUT;
-    controller->getCurrentState()->isOn = false;
-    controller->changeStateTo(Controller::State::OFF);
+void LoopTimer::firingUpTimeout()
+{
+    Controller::get()->getRelays()->turnLighterOff();
+    Controller::get()->getBlower()->stop();
+    Controller::get()->getFeeder()->stop();
+    Controller::get()->getCurrentState()->error = Errors::FIRING_UP_TIMEOUT;
+    Controller::get()->getCurrentState()->isOn = false;
+    Controller::get()->changeStateTo(Controller::State::OFF);
 }
 
-void LoopTimer::startExtinction() {
-    controller->getRelays()->turnOffAll();
-    controller->getFeeder()->stop();
-    controller->getBlower()->setSpeed(BlowerSpeed::RPM_50);
-    controller->getMainTimer()->stop();
-    controller->getCleaningTimer()->stop();
-    controller->changeStateTo(Controller::State::EXTINCTION);
+void LoopTimer::startExtinction()
+{
+    Controller::get()->getRelays()->turnOffAll();
+    Controller::get()->getFeeder()->stop();
+    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_50);
+    Controller::get()->getMainTimer()->stop();
+    Controller::get()->getCleaningTimer()->stop();
+    Controller::get()->changeStateTo(Controller::State::EXTINCTION);
 }
 
-void LoopTimer::off() {
-    controller->getBlower()->stop();
-    controller->getFeeder()->stop();
-    controller->changeStateTo(Controller::State::OFF);
+void LoopTimer::off()
+{
+    Controller::get()->getBlower()->stop();
+    Controller::get()->getFeeder()->stop();
+    Controller::get()->changeStateTo(Controller::State::OFF);
 }
 
-void LoopTimer::onTime(Timer* timer) {
-    if (controller->getState() == Controller::State::OFF) {
-        if (controller->getCurrentState()->isOn &&
-            controller->getCurrentState()->fumesTemperature < FIRING_UP_MAX_TEMP && controller->getCurrentState()->centralHeatingTemperature < MINIMAL_TEMP_FOR_CH
-            ) {
+void LoopTimer::onTime(Timer* timer)
+{
+    if (Controller::get()->getState() == Controller::State::OFF) {
+        if (Controller::get()->getCurrentState()->isOn && Controller::get()->getCurrentState()->fumesTemperature < FIRING_UP_MAX_TEMP && Controller::get()->getCurrentState()->centralHeatingTemperature < MINIMAL_TEMP_FOR_CH) {
             startFiringUpPreblow();
         }
-    } else if (controller->getState() == Controller::State::FIRING_UP) {
-        if (controller->getCurrentStateTime() < FIRING_UP_TIME && controller->getCurrentState()->fumesTemperature > FIRING_UP_MAX_TEMP) {
+    } else if (Controller::get()->getState() == Controller::State::FIRING_UP) {
+        if (Controller::get()->getCurrentStateTime() < (uint32_t)Controller::get()->getCurrentState()->firingUpTimeToSet && Controller::get()->getCurrentState()->fumesTemperature > FIRING_UP_MAX_TEMP) {
             startStabilization();
-        } else if (controller->getCurrentStateTime() > FIRING_UP_TIME || ((controller->getState() != Controller::State::OFF && !controller->getCurrentState()->isOn))) {
+        } else if (Controller::get()->getCurrentStateTime() > (uint32_t)Controller::get()->getCurrentState()->firingUpTimeToSet || ((Controller::get()->getState() != Controller::State::OFF && !Controller::get()->getCurrentState()->isOn))) {
             firingUpTimeout();
         }
-    } else if (controller->getState() == Controller::State::NORMAL) {
-        if (controller->getCurrentState()->centralHeatingTemperature > MINIMAL_TEMP_FOR_CH) {
-            if (controller->getCurrentState()->centralHeatingTemperature > controller->getCurrentState()->centralHeatingTemperatureToSet) {
-                controller->getRelays()->turnCentralHeatingPumpOff();
+    } else if (Controller::get()->getState() == Controller::State::NORMAL) {
+        if (Controller::get()->getCurrentState()->centralHeatingTemperature > MINIMAL_TEMP_FOR_CH) {
+            if (Controller::get()->getCurrentState()->centralHeatingTemperature > Controller::get()->getCurrentState()->centralHeatingTemperatureToSet) {
+                Controller::get()->getRelays()->turnCentralHeatingPumpOff();
             } else {
-                controller->getRelays()->turnCentralHeatingPumpOn();
+                Controller::get()->getRelays()->turnCentralHeatingPumpOn();
             }
         }
 
-        if (controller->getCurrentState()->centralHeatingTemperature > MINIMAL_TEMP_FOR_HW) {
-            if (controller->getCurrentState()->hotWaterTemperature < controller->getCurrentState()->hotWaterTemperatureToSet) {
-                controller->getRelays()->turnHotWaterPumpOn();
+        if (Controller::get()->getCurrentState()->centralHeatingTemperature > MINIMAL_TEMP_FOR_HW) {
+            if (Controller::get()->getCurrentState()->hotWaterTemperature < Controller::get()->getCurrentState()->hotWaterTemperatureToSet) {
+                Controller::get()->getRelays()->turnHotWaterPumpOn();
             } else {
-                controller->getRelays()->turnHotWaterPumpOff();
+                Controller::get()->getRelays()->turnHotWaterPumpOff();
             }
         }
 
-        if (controller->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP) {
-            if (controller->getCurrentState()->centralHeatingTemperature < controller->getCurrentState()->centralHeatingTemperatureToSet ||
-                controller->getCurrentState()->hotWaterTemperature < controller->getCurrentState()->hotWaterTemperatureToSet) {
-                controller->getFeeder()->setFeedTime(0.8f * controller->getCurrentState()->feederTimeToSet);
-                controller->getFeeder()->setPeriodTime(controller->getCurrentState()->feederPeriodToSet);
+        if (Controller::get()->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP) {
+            if (Controller::get()->getCurrentState()->centralHeatingTemperature < Controller::get()->getCurrentState()->centralHeatingTemperatureToSet || Controller::get()->getCurrentState()->hotWaterTemperature < Controller::get()->getCurrentState()->hotWaterTemperatureToSet) {
+                Controller::get()->getFeeder()->setFeedTime(0.8f * Controller::get()->getCurrentState()->feederTimeToSet);
+                Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
             }
         }
-    } else if (controller->getState() == Controller::State::EXTINCTION) {
-        if (controller->getCurrentState()->fumesTemperature < FUMES_MIN_TEMP) {
+    } else if (Controller::get()->getState() == Controller::State::EXTINCTION) {
+        if (Controller::get()->getCurrentState()->fumesTemperature < FUMES_MIN_TEMP) {
             off();
         }
     }
 
-    if (controller->getState() != Controller::State::OFF && controller->getCurrentState()->isOn == false) {
+    if (Controller::get()->getState() != Controller::State::OFF && Controller::get()->getCurrentState()->isOn == false) {
         startExtinction();
     }
 }

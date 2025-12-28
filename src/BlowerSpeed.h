@@ -87,6 +87,7 @@ extern inline const char* BlowerSpeedToString(uint8_t speed) {
         case BlowerSpeed::RPM_10:
             return "10%";
 
+        default:
         case BlowerSpeed::RPM_0:
             return "0%";
     }

@@ -28,6 +28,8 @@ public:
         EXTINCTION
     };
 private:
+    static Controller* instance;
+
     ThermoCouple* fumesTemperature;
     NTC* boilerTemperature;
     NTC* hotWaterTankTemperature;
@@ -45,10 +47,12 @@ private:
     CurrentState* currentState;
 
     SerialCommunication* se;
-    uint32_t currentStateTime;    
-public:
-    Controller();
+    uint32_t currentStateTime;
 
+    Controller();
+public:
+    static Controller* get();
+    
     void setup();
     void loop();
 
@@ -65,9 +69,8 @@ public:
     CurrentState* getCurrentState();
     uint32_t getCurrentStateTime();
     void getSensorsData();
+    SerialCommunication* getSerialCommunication();
     void onTime(Timer* timer) override;
 };
-
-extern Controller* controller;
 
 #endif

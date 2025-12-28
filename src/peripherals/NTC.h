@@ -10,6 +10,7 @@ class NTC : public TemperatureSensor {
     uint32_t B = 3470;  //thermistor material constant
     float Ucc = 5.0f;   //for Arduino it's 5V
     uint32_t R = 10000; //second resistor from voltage divider
+    float readSensor();
 public:
     NTC(int resistance, const uint8_t analogPin, uint16_t Bvalue = 3470);
     float getTemperature() override;

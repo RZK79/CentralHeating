@@ -3,13 +3,12 @@
 
 #include <Arduino.h>
 
-#define SC_START '*'
-#define SC_END '#'
-
 class SerialCommunication {
     char data[32] = { '\0' };
     bool recvInProgress;
-    int i = 0;
+    int i;
+    const char start = '*';
+    const char end = '#';
     void init();
 public:
     SerialCommunication();

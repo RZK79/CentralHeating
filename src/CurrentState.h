@@ -30,6 +30,9 @@ public:
     int NTCch;
     int NTChw;
 
+    int firingUpTimeToSet;
+    int stabilizationTimeToSet;
+
     int error;
 };
 

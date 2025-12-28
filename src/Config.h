@@ -33,7 +33,7 @@
 #define PREFEED_TIME        10*SECOND_MILL
 
 #define FIRING_UP_MAX_TEMP  80
-#define FUMES_MIN_TEMP      50
+#define FUMES_MIN_TEMP      70
 #define FUMES_MAX_TEMP      200
 #define MINIMAL_TEMP_FOR_CH 40
 #define MINIMAL_TEMP_FOR_HW 50

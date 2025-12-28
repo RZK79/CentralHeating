@@ -14,38 +14,38 @@ void Relays::turnOffAll() {
     digitalWrite(CWU_PUMP, HIGH);
     digitalWrite(LIGHTER, HIGH);
 
-    controller->getCurrentState()->isCentralHeatingPumpOn = false;
-    controller->getCurrentState()->isHotWaterPumpOn = false;
-    controller->getCurrentState()->lighter = false;
+    Controller::get()->getCurrentState()->isCentralHeatingPumpOn = false;
+    Controller::get()->getCurrentState()->isHotWaterPumpOn = false;
+    Controller::get()->getCurrentState()->lighter = false;
 }
 
 void Relays::turnLighterOn() {
-    controller->getCurrentState()->lighter = true;
+    Controller::get()->getCurrentState()->lighter = true;
     digitalWrite(LIGHTER, LOW);
 }
 
 void Relays::turnLighterOff() {
-    controller->getCurrentState()->lighter = false;
+    Controller::get()->getCurrentState()->lighter = false;
     digitalWrite(LIGHTER, HIGH);
 }
 
 void Relays::turnCentralHeatingPumpOn() {
-    controller->getCurrentState()->isCentralHeatingPumpOn = true;
+    Controller::get()->getCurrentState()->isCentralHeatingPumpOn = true;
     digitalWrite(CO_PUMP, LOW);
 }
 
 void Relays::turnCentralHeatingPumpOff() {
-    controller->getCurrentState()->isCentralHeatingPumpOn = false;
+    Controller::get()->getCurrentState()->isCentralHeatingPumpOn = false;
     digitalWrite(CO_PUMP, HIGH);
 }
 
 void Relays::turnHotWaterPumpOn() {
-    controller->getCurrentState()->isHotWaterPumpOn = true;
+    Controller::get()->getCurrentState()->isHotWaterPumpOn = true;
     digitalWrite(CWU_PUMP, LOW);
 }
 
 void Relays::turnHotWaterPumpOff() {
-    controller->getCurrentState()->isHotWaterPumpOn = false;
+    Controller::get()->getCurrentState()->isHotWaterPumpOn = false;
     digitalWrite(CWU_PUMP, HIGH);
 }
 
