@@ -5,12 +5,13 @@
 #include "TemperatureSensor.h"
 
 class ThermoCouple : TemperatureSensor {
-    MAX6675* sensor;
+    MAX6675 *sensor;
+
 public:
     /**
      * pin - used as chip select pin
      */
-    ThermoCouple(const uint8_t pin);
+    void init(const uint8_t pin);
     float getTemperature() override;
 };
 

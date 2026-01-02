@@ -1,10 +1,10 @@
 #include "ThermoCouple.h"
 #include <SPI.h>
 
-ThermoCouple::ThermoCouple(const uint8_t pin)
-    : TemperatureSensor(pin)
-{
+void ThermoCouple::init(const uint8_t pin){
+    readPin = pin;
     sensor = new MAX6675(SCK, readPin, MISO);
+
     for (int i = 0; i < 10; i++) {
         buf[i] = sensor->readCelsius();
     }

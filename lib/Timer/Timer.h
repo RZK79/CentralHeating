@@ -14,7 +14,6 @@ class Timer{
   vector<TimerEventListener*> listeners;
 public:
   Timer();
-  virtual ~Timer();
 
   void update();
 

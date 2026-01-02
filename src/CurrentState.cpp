@@ -4,7 +4,7 @@
 #include "Errors.h"
 #include "Config.h"
 
-CurrentState::CurrentState() {
+void CurrentState::setDefault() {
     wifiConnected = false;
 
     isOn = false;

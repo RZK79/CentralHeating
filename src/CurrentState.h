@@ -3,9 +3,8 @@
 
 class CurrentState {
 public:
-    CurrentState();
 
-    bool wifiConnected;
+bool wifiConnected;
 
     bool isOn;
     bool isCentralHeatingPumpOn;
@@ -15,25 +14,27 @@ public:
 
     int feederTimeToSet;
     int feederPeriodToSet;
-
+    
     int centralHeatingTemperatureToSet;
     int hotWaterTemperatureToSet;
 
     int blowerSpeedToSetFiringUp;
     int blowerSpeedToSetStabilization;
     int blowerSpeedToSetNormal;
-
+    
     int centralHeatingTemperature;
     int hotWaterTemperature;
     int fumesTemperature;
-
+    
     int NTCch;
     int NTChw;
-
+    
     int firingUpTimeToSet;
     int stabilizationTimeToSet;
-
+    
     int error;
+    
+    void setDefault();
 };
 
 #endif

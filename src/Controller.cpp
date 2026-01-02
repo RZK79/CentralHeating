@@ -17,56 +17,52 @@ Controller* Controller::get()
 
 Controller::Controller()
 {
-    se = new SerialCommunication();
-    currentState = new CurrentState();
+    se.init();
+    currentState.setDefault();
 }
 
 void Controller::setup()
 {
     state = State::OFF;
-    fumesTemperature = new ThermoCouple(TC_CS);
-    boilerTemperature = new NTC(NTC::ToValue(currentState->NTCch), CO_TEMP);
-    hotWaterTankTemperature = new NTC(NTC::ToValue(currentState->NTChw), CWU_TEMP);
+    fumesTemperature.init(TC_CS);
+    boilerTemperature.init(NTC::ToValue(currentState.NTCch), CO_TEMP);
+    hotWaterTankTemperature.init(NTC::ToValue(currentState.NTChw), CWU_TEMP);
 
-    feeder = new Feeder();
-    feeder->stop();
-    blower = new Blower();
-    blower->stop();
-    relays = new Relays();
-    relays->turnOffAll();
+    feeder.init();
+    feeder.stop();
+    blower.init(25000);
+    blower.stop();
+    relays.init();
+    relays.turnOffAll();
 
-    mainTimer = new MainTimer();
-    cleaningTimer = new CleaningTimer();
-    loopTimer = new LoopTimer();
-    currentStateTimer = new Timer();
-    currentStateTimer->addEventListener(this);
+    currentStateTimer.addEventListener(this);
 }
 
 void Controller::loop()
 {
-    feeder->update();
-    mainTimer->update();
-    cleaningTimer->update();
-    loopTimer->update();
-    blower->update();
-    currentStateTimer->update();
+    feeder.update();
+    mainTimer.update();
+    cleaningTimer.update();
+    loopTimer.update();
+    blower.update();
+    currentStateTimer.update();
 }
 
 SerialCommunication* Controller::getSerialCommunication(){
-    return se;
+    return &se;
 }
 
 void Controller::getSensorsData()
 {
-    currentState->fumesTemperature = fumesTemperature->getTemperature();
-    currentState->centralHeatingTemperature = boilerTemperature->getTemperature();
-    currentState->hotWaterTemperature = hotWaterTankTemperature->getTemperature();
+    currentState.fumesTemperature = fumesTemperature.getTemperature();
+    currentState.centralHeatingTemperature = boilerTemperature.getTemperature();
+    currentState.hotWaterTemperature = hotWaterTankTemperature.getTemperature();
 }
 
 void Controller::changeStateTo(State newState)
 {
     currentStateTime = 0;
-    currentStateTimer->start(SECOND_MILL);
+    currentStateTimer.start(SECOND_MILL);
     state = newState;
 }
 
@@ -114,37 +110,37 @@ const char* Controller::getStateAsString()
 
 Feeder* Controller::getFeeder()
 {
-    return feeder;
+    return &feeder;
 }
 
 Blower* Controller::getBlower()
 {
-    return blower;
+    return &blower;
 }
 
 MainTimer* Controller::getMainTimer()
 {
-    return mainTimer;
+    return &mainTimer;
 }
 
 LoopTimer* Controller::getLoopTimer()
 {
-    return loopTimer;
+    return &loopTimer;
 }
 
 CleaningTimer* Controller::getCleaningTimer()
 {
-    return cleaningTimer;
+    return &cleaningTimer;
 }
 
 CurrentState* Controller::getCurrentState()
 {
-    return currentState;
+    return &currentState;
 }
 
 Relays* Controller::getRelays()
 {
-    return relays;
+    return &relays;
 }
 
 uint32_t Controller::getCurrentStateTime()

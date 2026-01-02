@@ -2,6 +2,7 @@
 #define _FEEDER_H_
 
 #include <Arduino.h>
+#include "Timer.h"
 #include "TimerEventListener.h"
 
 class Feeder : public TimerEventListener {
@@ -13,14 +14,14 @@ public:
         PERIOD
     };
 private:    
-    Timer* feederTimer;
+    Timer feederTimer;
     uint16_t feedTime;
     uint16_t periodTime;
 
     Feeder::State currentState;
     bool feederOn;
 public:
-    Feeder();
+    void init();
 
     void update();
 

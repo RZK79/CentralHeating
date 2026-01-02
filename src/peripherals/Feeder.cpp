@@ -1,61 +1,69 @@
 #include "Feeder.h"
-#include "Timer.h"
 #include "Config.h"
+#include "Timer.h"
 
-Feeder::Feeder() {
+void Feeder::init()
+{
     feederOn = false;
-    
-    feederTimer = new Timer();
-    feederTimer->addEventListener(this);
+    feederTimer.addEventListener(this);
 
     pinMode(FEEDER, OUTPUT);
     digitalWrite(FEEDER, HIGH);
 }
 
-void Feeder::update() {
-    feederTimer->update();
+void Feeder::update()
+{
+    feederTimer.update();
 }
 
-void Feeder::prefeed() {
+void Feeder::prefeed()
+{
     feederOn = true;
     currentState = Feeder::State::PREFEED;
     digitalWrite(FEEDER, LOW);
 }
 
-void Feeder::setFeedTime(uint16_t feed) {
+void Feeder::setFeedTime(uint16_t feed)
+{
     feedTime = feed;
 }
 
-void Feeder::setPeriodTime(uint16_t period) {
+void Feeder::setPeriodTime(uint16_t period)
+{
     periodTime = period;
 }
 
-void Feeder::start() {
-    feederTimer->start(feedTime);
+void Feeder::start()
+{
+    feederTimer.start(feedTime);
     currentState = Feeder::State::FEED;
 }
 
-void Feeder::stop() {
-    feederTimer->pause();
+void Feeder::stop()
+{
+    feederTimer.pause();
+    currentState = Feeder::State::OFF;
 }
 
-Feeder::State Feeder::getState() {
+Feeder::State Feeder::getState()
+{
     return currentState;
 }
 
-void Feeder::onTime(Timer* timer) {
+void Feeder::onTime(Timer* timer)
+{
     switch (currentState) {
         case Feeder::State::FEED:
             feederOn = true;
             digitalWrite(FEEDER, LOW);
-            feederTimer->start(feedTime);
+            feederTimer.start(feedTime);
             currentState = Feeder::State::PERIOD;
             break;
 
         case Feeder::State::PERIOD:
             feederOn = false;
             digitalWrite(FEEDER, HIGH);
-            feederTimer->start(periodTime);
+            feederTimer.start(periodTime);
             currentState = Feeder::State::FEED;
             break;
 
@@ -65,11 +73,13 @@ void Feeder::onTime(Timer* timer) {
             break;
 
         case Feeder::State::OFF:
+            digitalWrite(FEEDER, HIGH);
             feederOn = false;
             break;
     }
 }
 
-bool Feeder::isFeederOn() {
+bool Feeder::isFeederOn()
+{
     return feederOn;
 }

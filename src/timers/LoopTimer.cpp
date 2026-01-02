@@ -40,7 +40,8 @@ void LoopTimer::firingUpTimeout()
 
 void LoopTimer::startExtinction()
 {
-    Controller::get()->getRelays()->turnOffAll();
+    Controller::get()->getRelays()->turnCentralHeatingPumpOn();
+    Controller::get()->getRelays()->turnHotWaterPumpOn();
     Controller::get()->getFeeder()->stop();
     Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_50);
     Controller::get()->getMainTimer()->stop();
@@ -50,6 +51,8 @@ void LoopTimer::startExtinction()
 
 void LoopTimer::off()
 {
+    Controller::get()->getRelays()->turnCentralHeatingPumpOff();
+    Controller::get()->getRelays()->turnHotWaterPumpOff();
     Controller::get()->getBlower()->stop();
     Controller::get()->getFeeder()->stop();
     Controller::get()->changeStateTo(Controller::State::OFF);
@@ -84,16 +87,25 @@ void LoopTimer::onTime(Timer* timer)
             }
         }
 
-        if (Controller::get()->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP) {
+        if (Controller::get()->getCurrentState()->fumesTemperature > FUMES_H_MODULATION_TEMP) {
             if (Controller::get()->getCurrentState()->centralHeatingTemperature < Controller::get()->getCurrentState()->centralHeatingTemperatureToSet || Controller::get()->getCurrentState()->hotWaterTemperature < Controller::get()->getCurrentState()->hotWaterTemperatureToSet) {
-                Controller::get()->getFeeder()->setFeedTime(0.8f * Controller::get()->getCurrentState()->feederTimeToSet);
+                Controller::get()->getFeeder()->setFeedTime(0.89f * Controller::get()->getCurrentState()->feederTimeToSet);
                 Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
             }
+        }
+
+        if (Controller::get()->getCurrentState()->fumesTemperature < FUMES_L_MODULATION_TEMP) {
+            Controller::get()->getFeeder()->setFeedTime(Controller::get()->getCurrentState()->feederTimeToSet);
+            Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
         }
     } else if (Controller::get()->getState() == Controller::State::EXTINCTION) {
         if (Controller::get()->getCurrentState()->fumesTemperature < FUMES_MIN_TEMP) {
             off();
         }
+    }
+
+    if(Controller::get()->getCurrentState()->centralHeatingTemperature > SAFE_CH_TEMP || Controller::get()->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP){
+        off();
     }
 
     if (Controller::get()->getState() != Controller::State::OFF && Controller::get()->getCurrentState()->isOn == false) {

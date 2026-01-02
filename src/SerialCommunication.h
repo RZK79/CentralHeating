@@ -9,9 +9,8 @@ class SerialCommunication {
     int i;
     const char start = '*';
     const char end = '#';
-    void init();
 public:
-    SerialCommunication();
+    void init();
     void serialEvent();
     void parseData(char* data);
 };

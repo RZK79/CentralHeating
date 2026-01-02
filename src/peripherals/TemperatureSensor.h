@@ -8,11 +8,6 @@ protected:
     uint8_t readPin;
     float buf[10];
 public:
-    TemperatureSensor(const uint8_t pin)
-    {
-        readPin = pin;
-    }
-
     virtual float getTemperature() = 0;
 };
 

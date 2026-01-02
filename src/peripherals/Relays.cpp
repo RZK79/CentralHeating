@@ -3,7 +3,7 @@
 #include "Controller.h"
 #include "CurrentState.h"
 
-Relays::Relays() {
+void Relays::init() {
     pinMode(CO_PUMP, OUTPUT);
     pinMode(CWU_PUMP, OUTPUT);
     pinMode(LIGHTER, OUTPUT);

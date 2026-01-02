@@ -7,9 +7,6 @@ Timer::Timer() {
     startMillis = millis();
 }
 
-Timer::~Timer() {
-}
-
 void Timer::update() {
     if (paused) {
         return;

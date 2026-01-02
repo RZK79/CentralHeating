@@ -1,8 +1,8 @@
 #include "NTC.h"
 
-NTC::NTC(int resistance, const uint8_t analogPin, uint16_t Bvalue)
-    : TemperatureSensor(analogPin)
+void NTC::init(int resistance, const uint8_t analogPin, uint16_t Bvalue)
 {
+    readPin = analogPin;
     RT0 = resistance;
     B = Bvalue;
     for (int i = 0; i < 10; i++) {
