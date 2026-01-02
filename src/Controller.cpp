@@ -46,6 +46,8 @@ void Controller::loop()
     loopTimer.update();
     blower.update();
     currentStateTimer.update();
+
+    se.serialEvent();
 }
 
 SerialCommunication* Controller::getSerialCommunication(){
