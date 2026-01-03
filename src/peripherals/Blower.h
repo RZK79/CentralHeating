@@ -11,12 +11,10 @@ private:
     static int currentRPS;
     static int time;
     static int currentRPM;
-    int freq;
+    float fullPeriod;
 public:
     static bool on;
-    static float fullPeriod; 
     static int speed;
-    static float duty;
     static unsigned int pwmOn;
     void init(int PWMfreq);
     void start();

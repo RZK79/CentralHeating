@@ -6,9 +6,7 @@ int Blower::currentRPS = 0;
 int Blower::time = 0;
 int Blower::currentRPM = 0;
 int Blower::speed = 0;
-float Blower::fullPeriod = 0.0f;
 bool Blower::on = false;
-float Blower::duty = 0.0f;
 unsigned int Blower::pwmOn = 0;
 
 ISR(TIMER1_COMPA_vect)
@@ -46,8 +44,7 @@ void Blower::init(int PWMfreq)
 #endif
 
     stop();
-
-    freq = (F_CPU / PWMfreq) - 1;
+    int freq = (F_CPU / PWMfreq) - 1;
     fullPeriod = clockCyclesToMicroseconds(freq);
 
     cli();
@@ -79,44 +76,44 @@ void Blower::stop()
 
 void Blower::setSpeed(int _speed)
 {
+    float duty;
     speed = _speed;
-
     switch (Blower::speed) {
-    case BlowerSpeed::RPM_100:
-        duty = 100;
-        break;
-    case BlowerSpeed::RPM_90:
-        duty = 90.0f;
-        break;
-    case BlowerSpeed::RPM_80:
-        duty = 80.0f;
-        break;
-    case BlowerSpeed::RPM_70:
-        duty = 70.0f;
-        break;
-    case BlowerSpeed::RPM_60:
-        duty = 60.0f;
-        break;
-    case BlowerSpeed::RPM_50:
-        duty = 50.0f;
-        break;
-    case BlowerSpeed::RPM_40:
-        duty = 40.0f;
-        break;
-    case BlowerSpeed::RPM_30:
-        duty = 30.0f;
-        break;
-    case BlowerSpeed::RPM_20:
-        duty = 20.0f;
-        break;
-    case BlowerSpeed::RPM_10:
-        duty = 1.0f;
-        break;
+        case BlowerSpeed::RPM_100:
+            duty = 100;
+            break;
+        case BlowerSpeed::RPM_90:
+            duty = 90.0f;
+            break;
+        case BlowerSpeed::RPM_80:
+            duty = 80.0f;
+            break;
+        case BlowerSpeed::RPM_70:
+            duty = 70.0f;
+            break;
+        case BlowerSpeed::RPM_60:
+            duty = 60.0f;
+            break;
+        case BlowerSpeed::RPM_50:
+            duty = 50.0f;
+            break;
+        case BlowerSpeed::RPM_40:
+            duty = 40.0f;
+            break;
+        case BlowerSpeed::RPM_30:
+            duty = 30.0f;
+            break;
+        case BlowerSpeed::RPM_20:
+            duty = 20.0f;
+            break;
+        case BlowerSpeed::RPM_10:
+            duty = 1.0f;
+            break;
 
-    case BlowerSpeed::RPM_0:
-    default:
-        duty = 0;
-        break;
+        case BlowerSpeed::RPM_0:
+        default:
+            duty = 0;
+            break;
     }
 
     pwmOn = (unsigned int)((duty / 100.0f) * fullPeriod);
