@@ -30,12 +30,14 @@ void Controller::setup()
 
     feeder.init();
     feeder.stop();
-    blower.init(25000);
-    blower.stop();
+    blower.init(20000);
+    blower.setSpeed(BlowerSpeed::RPM_30);
+    blower.start();
     relays.init();
     relays.turnOffAll();
 
     currentStateTimer.addEventListener(this);
+    changeStateTo(State::OFF);
 }
 
 void Controller::loop()

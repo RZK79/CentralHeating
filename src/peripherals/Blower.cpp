@@ -7,10 +7,79 @@ int Blower::time = 0;
 int Blower::currentRPM = 0;
 int Blower::speed = 0;
 float Blower::fullPeriod = 0.0f;
+bool Blower::on = false;
+float Blower::duty = 0.0f;
+unsigned int Blower::pwmOn = 0;
 
 ISR(TIMER1_COMPA_vect)
 {
-    float duty = 0;
+    if (Blower::on) {
+        digitalWrite(BLOWER, HIGH);
+        delayMicroseconds(Blower::pwmOn);
+        digitalWrite(BLOWER, LOW);
+    } else {
+        digitalWrite(BLOWER, LOW);
+    }
+}
+
+#ifdef ENABLE_ENCODER
+void Blower::SpeedInterrupt()
+{
+    Blower::currentRPS++;
+
+    if (millis() - Blower::time > 1000) {
+        Blower::time = millis();
+        currentRPM = Blower::currentRPS * 60;
+        Blower::currentRPS = 0;
+    }
+}
+#endif
+
+void Blower::init(int PWMfreq)
+{
+    pinMode(BLOWER, OUTPUT);
+    digitalWrite(BLOWER, LOW);
+
+#ifdef ENABLE_ENCODER
+    pinMode(BLOWER_ENCODER, INPUT);
+    attachInterrupt(INT0, Blower::SpeedInterrupt, RISING);
+#endif
+
+    stop();
+
+    freq = (F_CPU / PWMfreq) - 1;
+    fullPeriod = clockCyclesToMicroseconds(freq);
+
+    cli();
+    TCCR1A = 0;
+    TCCR1B = 0;
+    TCNT1 = 0;
+    OCR1A = freq;
+    TCCR1B |= (1 << WGM12);
+    TCCR1B |= (1 << CS10);
+    TIMSK1 |= (1 << OCIE1A);
+    sei();
+}
+
+void Blower::start()
+{
+    currentRPM = 0;
+    currentRPS = 0;
+    on = true;
+#ifdef ENABLE_ENCODER
+    time = millis();
+#endif
+}
+
+void Blower::stop()
+{
+    on = false;
+    setSpeed(BlowerSpeed::RPM_0);
+}
+
+void Blower::setSpeed(int _speed)
+{
+    speed = _speed;
 
     switch (Blower::speed) {
     case BlowerSpeed::RPM_100:
@@ -41,7 +110,7 @@ ISR(TIMER1_COMPA_vect)
         duty = 20.0f;
         break;
     case BlowerSpeed::RPM_10:
-        duty = 10.0f;
+        duty = 1.0f;
         break;
 
     case BlowerSpeed::RPM_0:
@@ -50,66 +119,7 @@ ISR(TIMER1_COMPA_vect)
         break;
     }
 
-    digitalWrite(BLOWER, HIGH);
-    delayMicroseconds((unsigned int)((duty / 100) * Blower::fullPeriod));
-    digitalWrite(BLOWER, LOW);
-    delayMicroseconds((unsigned int)(((100.0f - duty) / 100) * Blower::fullPeriod));
-}
-
-#ifdef ENABLE_ENCODER
-void Blower::SpeedInterrupt()
-{
-    Blower::currentRPS++;
-
-    if (millis() - Blower::time > 1000) {
-        Blower::time = millis();
-        currentRPM = Blower::currentRPS * 60;
-        Blower::currentRPS = 0;
-    }
-}
-#endif
-
-void Blower::init(int PWMfreq)
-{
-    stop();
-
-    pinMode(BLOWER, OUTPUT);
-    digitalWrite(BLOWER, HIGH);
-
-#ifdef ENABLE_ENCODER
-    pinMode(BLOWER_ENCODER, INPUT);
-    attachInterrupt(INT0, Blower::SpeedInterrupt, RISING);
-#endif
-
-    freq = 16000000 / PWMfreq;
-    fullPeriod = 1000000 / PWMfreq;
-
-    cli();
-    TCCR1A = 0;
-    TCCR1B = 0;
-    TCNT1 = 0;
-    OCR1A = freq;
-    TCCR1B |= (1 << WGM12);
-    TCCR1B |= (1 << CS10); // prescaler=1
-    TIMSK1 |= (1 << OCIE1A);
-    sei();
-}
-
-void Blower::start()
-{
-    currentRPM = 0;
-    currentRPS = 0;
-    time = millis();
-}
-
-void Blower::stop()
-{
-    setSpeed(BlowerSpeed::RPM_0);
-}
-
-void Blower::setSpeed(int _speed)
-{
-    speed = _speed;
+    pwmOn = (unsigned int)((duty / 100.0f) * fullPeriod);
 }
 
 int Blower::getSpeed()
@@ -123,5 +133,5 @@ void Blower::update()
 
 bool Blower::isOn()
 {
-    return speed != BlowerSpeed::RPM_0 ? true : false;
+    return on;
 }
