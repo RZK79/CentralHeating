@@ -1,7 +1,7 @@
 #include "ThermoCouple.h"
 #include <SPI.h>
 
-void ThermoCouple::init(const uint8_t pin){
+ThermoCouple::ThermoCouple(const uint8_t pin){
     readPin = pin;
     sensor = new MAX6675(SCK, readPin, MISO);
 

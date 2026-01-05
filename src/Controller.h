@@ -30,24 +30,24 @@ public:
 private:
     static Controller* instance;
 
-    ThermoCouple fumesTemperature;
-    NTC boilerTemperature;
-    NTC hotWaterTankTemperature;
-    Relays relays;
-    Feeder feeder;
-    Blower blower;
+    ThermoCouple *fumesTemperature;
+    NTC *boilerTemperature;
+    NTC *hotWaterTankTemperature;
+    Relays *relays;
+    Feeder *feeder;
+    Blower *blower;
 
-    Timer currentStateTimer;
-    MainTimer mainTimer;
-    LoopTimer loopTimer;
-    CleaningTimer cleaningTimer;
+    Timer *currentStateTimer;
+    MainTimer *mainTimer;
+    LoopTimer *loopTimer;
+    CleaningTimer *cleaningTimer;
+
+    CurrentState *currentState;
+    
+    SerialCommunication *se;
+    uint32_t currentStateTime;
 
     State state;
-
-    CurrentState currentState;
-
-    SerialCommunication se;
-    uint32_t currentStateTime;
 
     Controller();
 public:

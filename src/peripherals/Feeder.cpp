@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Timer.h"
 
-void Feeder::init()
+Feeder::Feeder()
 {
     feederOn = false;
     feederTimer.addEventListener(this);

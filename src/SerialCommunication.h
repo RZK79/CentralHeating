@@ -10,6 +10,7 @@ class SerialCommunication {
     const char start = '*';
     const char end = '#';
 public:
+    SerialCommunication();
     void init();
     void serialEvent();
     void parseData(char* data);

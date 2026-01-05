@@ -16,7 +16,7 @@ public:
     static bool on;
     static int speed;
     static unsigned int pwmOn;
-    void init(int PWMfreq);
+    Blower(int PWMfreq);
     void start();
     void stop();
     void setSpeed(int speed);

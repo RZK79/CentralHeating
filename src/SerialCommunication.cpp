@@ -6,9 +6,13 @@
 #include <avr/wdt.h>
 #include <string.h>
 
+SerialCommunication::SerialCommunication(){
+    Serial.begin(9600);
+    init();
+}
+
 void SerialCommunication::init()
 {
-    Serial.begin(9600);
     recvInProgress = false;
     data[0] = { '\0' };
     i = 0;
@@ -18,7 +22,6 @@ void SerialCommunication::serialEvent()
 {
     while(Serial.available()){
         char c = Serial.read();
-        Serial.print(c);
         if (recvInProgress) {
             if (c != end) {
                 data[i++] = c;

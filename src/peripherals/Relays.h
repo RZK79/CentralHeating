@@ -5,7 +5,7 @@
 
 class Relays {
 public:
-    void init();
+    Relays();
     void turnOffAll();
 
     void turnLighterOn();

@@ -21,7 +21,7 @@ private:
     Feeder::State currentState;
     bool feederOn;
 public:
-    void init();
+    Feeder();
 
     void update();
 

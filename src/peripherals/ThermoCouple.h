@@ -6,12 +6,11 @@
 
 class ThermoCouple : TemperatureSensor {
     MAX6675 *sensor;
-
 public:
     /**
      * pin - used as chip select pin
      */
-    void init(const uint8_t pin);
+    ThermoCouple(const uint8_t pin);
     float getTemperature() override;
 };
 

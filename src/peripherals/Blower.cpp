@@ -33,7 +33,7 @@ void Blower::SpeedInterrupt()
 }
 #endif
 
-void Blower::init(int PWMfreq)
+Blower::Blower(int PWMfreq)
 {
     pinMode(BLOWER, OUTPUT);
     digitalWrite(BLOWER, LOW);

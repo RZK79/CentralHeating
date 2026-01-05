@@ -3,8 +3,7 @@
 
 class CurrentState {
 public:
-
-bool wifiConnected;
+    bool wifiConnected;
 
     bool isOn;
     bool isCentralHeatingPumpOn;

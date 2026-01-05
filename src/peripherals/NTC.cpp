@@ -1,6 +1,6 @@
 #include "NTC.h"
 
-void NTC::init(int resistance, const uint8_t analogPin, uint16_t Bvalue)
+NTC::NTC(int resistance, const uint8_t analogPin, uint16_t Bvalue)
 {
     readPin = analogPin;
     RT0 = resistance;
