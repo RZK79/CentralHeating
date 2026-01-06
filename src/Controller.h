@@ -2,18 +2,20 @@
 #define _CONTROLLER_H_
 
 #include <Arduino.h>
-#include "peripherals/Feeder.h"
-#include "peripherals/Blower.h"
-#include "peripherals/ThermoCouple.h"
-#include "peripherals/NTC.h"
-#include "peripherals/Relays.h"
-#include "timers/MainTimer.h"
-#include "timers/LoopTimer.h"
-#include "timers/CleaningTimer.h"
 #include "CurrentState.h"
 #include "SerialCommunication.h"
+#include "peripherals/Blower.h"
+#include "peripherals/Feeder.h"
+#include "peripherals/NTC.h"
+#include "peripherals/Relays.h"
+#include "peripherals/ThermoCouple.h"
+#include "timers/CleaningTimer.h"
+#include "timers/LoopTimer.h"
+#include "timers/MainTimer.h"
 
-class Controller : public TimerEventListener{
+// #define SIMULATION
+
+class Controller : public TimerEventListener {
 public:
     enum State {
         OFF,
@@ -27,32 +29,34 @@ public:
         CLEANING,
         EXTINCTION
     };
+
 private:
     static Controller* instance;
 
-    ThermoCouple *fumesTemperature;
-    NTC *boilerTemperature;
-    NTC *hotWaterTankTemperature;
-    Relays *relays;
-    Feeder *feeder;
-    Blower *blower;
+    ThermoCouple* fumesTemperature;
+    NTC* boilerTemperature;
+    NTC* hotWaterTankTemperature;
+    Relays* relays;
+    Feeder* feeder;
+    Blower* blower;
 
-    Timer *currentStateTimer;
-    MainTimer *mainTimer;
-    LoopTimer *loopTimer;
-    CleaningTimer *cleaningTimer;
+    Timer* currentStateTimer;
+    MainTimer* mainTimer;
+    LoopTimer* loopTimer;
+    CleaningTimer* cleaningTimer;
 
-    CurrentState *currentState;
-    
-    SerialCommunication *se;
+    CurrentState* currentState;
+
+    SerialCommunication* se;
     uint32_t currentStateTime;
 
     State state;
 
     Controller();
+
 public:
     static Controller* get();
-    
+
     void setup();
     void loop();
 

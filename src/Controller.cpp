@@ -25,19 +25,25 @@ Controller::Controller()
 void Controller::setup()
 {
     state = State::OFF;
+
     fumesTemperature = new ThermoCouple(TC_CS);
     boilerTemperature = new NTC(NTC::ToValue(currentState->NTCch), CO_TEMP);
     hotWaterTankTemperature = new NTC(NTC::ToValue(currentState->NTChw), CWU_TEMP);
 
     feeder = new Feeder();
     feeder->stop();
-    blower = new Blower(10000);
-    blower->setSpeed(BlowerSpeed::RPM_100);
-    blower->start();
+
+    blower = new Blower(15000);
+
     relays = new Relays();
     relays->turnOffAll();
-
+    
+    mainTimer = new MainTimer();
+    loopTimer = new LoopTimer();
+    cleaningTimer = new CleaningTimer();
+    currentStateTimer = new Timer();
     currentStateTimer->addEventListener(this);
+    
     changeStateTo(State::OFF);
 }
 
@@ -49,6 +55,42 @@ void Controller::loop()
     loopTimer->update();
     blower->update();
     currentStateTimer->update();
+}
+
+void Controller::onTime(Timer* timer)
+{
+    currentStateTime++;
+    se->serialEvent();
+    
+    if (state == Controller::State::NORMAL) {
+        if(blower->getSpeed() != currentState->blowerSpeedToSetNormal){
+            blower->setSpeed(currentState->blowerSpeedToSetNormal);
+        }
+    }
+
+#ifdef SIMULATION
+    if (state != State::OFF && state != State::EXTINCTION && currentState->fumesTemperature < 120) {
+        currentState->fumesTemperature++;
+    } else if (state == State::EXTINCTION && currentState->fumesTemperature >= 50) {
+        currentState->fumesTemperature--;
+    } else {
+        if (state == Controller::State::NORMAL) {
+            if (currentState->fumesTemperature == 120) {
+                if (currentState->centralHeatingTemperature < currentState->centralHeatingTemperatureToSet) {
+                    currentState->centralHeatingTemperature++;
+                }
+
+                if (currentState->isHotWaterPumpOn) {
+                    if (currentState->hotWaterTemperature < currentState->hotWaterTemperatureToSet) {
+                        currentState->hotWaterTemperature++;
+                    }
+                }
+            }
+        }
+    }
+#else
+    getSensorsData();
+#endif
 }
 
 SerialCommunication* Controller::getSerialCommunication(){
@@ -151,45 +193,3 @@ uint32_t Controller::getCurrentStateTime()
     return currentStateTime;
 }
 
-void Controller::onTime(Timer* timer)
-{
-    currentStateTime++;
-    getSensorsData();
-    se->serialEvent();
-
-    /**
-     * FIRING UP SIMULATION
-     */
-    // if (state != State::OFF && state != State::EXTINCTION && currentState->fumesTemperature < 120) {
-    //     currentState->fumesTemperature++;
-    // } else if (state == State::EXTINCTION && currentState->fumesTemperature >= 50) {
-    //     currentState->fumesTemperature--;
-    // } else {
-    //     if (state == Controller::State::NORMAL) {
-    //         if (currentState->fumesTemperature == 120) {
-    //             if (currentState->centralHeatingTemperature < currentState->centralHeatingTemperatureToSet) {
-    //                 currentState->centralHeatingTemperature++;
-    //             }
-
-    //             if (currentState->isHotWaterPumpOn) {
-    //                 if (currentState->hotWaterTemperature < currentState->hotWaterTemperatureToSet) {
-    //                     currentState->hotWaterTemperature++;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    // char buf[128];
-    // sprintf(buf, "%03us ft:%02d cht:%02d hwt:%02d chp:%d hwp:%d l:%d %s state:%s",
-    //     (unsigned int)currentStateTime,
-    //     currentState->fumesTemperature,
-    //     currentState->centralHeatingTemperature,
-    //     currentState->hotWaterTemperature,
-    //     currentState->isCentralHeatingPumpOn,
-    //     currentState->isHotWaterPumpOn,
-    //     currentState->lighter,
-    //     blower->getSpeedAsString(),
-    //     getStateAsString());
-    // Serial.println(buf);
-}
