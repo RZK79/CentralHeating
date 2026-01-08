@@ -55,16 +55,24 @@ void Controller::loop()
     loopTimer->update();
     blower->update();
     currentStateTimer->update();
+    se->serialEvent();
 }
 
 void Controller::onTime(Timer* timer)
 {
     currentStateTime++;
-    se->serialEvent();
     
     if (state == Controller::State::NORMAL) {
         if(blower->getSpeed() != currentState->blowerSpeedToSetNormal){
             blower->setSpeed(currentState->blowerSpeedToSetNormal);
+        }
+    }else if(state == Controller::State::FIRING_UP){
+        if(blower->getSpeed() != currentState->blowerSpeedToSetFiringUp){
+            blower->setSpeed(currentState->blowerSpeedToSetFiringUp);
+        }
+    }else if(state == Controller::State::STABILIZATION){
+        if(blower->getSpeed() != currentState->blowerSpeedToSetStabilization){
+            blower->setSpeed(currentState->blowerSpeedToSetStabilization);
         }
     }
 
