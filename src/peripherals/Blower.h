@@ -3,10 +3,11 @@
 
 #include <Arduino.h>
 #include "BlowerSpeed.h"
+#include "Updateable.h"
 
 // #define ENABLE_ENCODER
 
-class Blower {
+class Blower : public Updateable {
 private:
     static int currentRPS;
     static int time;
@@ -16,12 +17,13 @@ public:
     static bool on;
     static int speed;
     static unsigned int pwmOn;
+
     Blower(int PWMfreq);
     void start();
     void stop();
     void setSpeed(int speed);
     int getSpeed();
-    void update();
+    virtual void update() override;
     bool isOn();
 #ifdef ENABLE_ENCODER
     static void SpeedInterrupt();

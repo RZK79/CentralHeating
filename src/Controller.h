@@ -2,6 +2,7 @@
 #define _CONTROLLER_H_
 
 #include <Arduino.h>
+#include <vector>
 #include "CurrentState.h"
 #include "SerialCommunication.h"
 #include "peripherals/Blower.h"
@@ -14,6 +15,8 @@
 #include "timers/MainTimer.h"
 
 // #define SIMULATION
+
+using namespace std;
 
 class Controller : public TimerEventListener {
 public:
@@ -51,6 +54,8 @@ private:
     uint32_t currentStateTime;
 
     State state;
+
+    vector<Updateable*> updateables;
 
     Controller();
 

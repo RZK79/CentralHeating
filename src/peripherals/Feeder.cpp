@@ -1,6 +1,6 @@
 #include "Feeder.h"
 #include "Config.h"
-#include "Timer.h"
+#include "Timer/Timer.h"
 
 Feeder::Feeder()
 {
@@ -41,6 +41,7 @@ void Feeder::start()
 
 void Feeder::stop()
 {
+    digitalWrite(FEEDER, HIGH);
     feederTimer.pause();
     currentState = Feeder::State::OFF;
 }

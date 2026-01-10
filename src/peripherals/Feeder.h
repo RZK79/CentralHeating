@@ -2,10 +2,10 @@
 #define _FEEDER_H_
 
 #include <Arduino.h>
-#include "Timer.h"
-#include "TimerEventListener.h"
+#include "Timer/Timer.h"
+#include "Timer/TimerEventListener.h"
 
-class Feeder : public TimerEventListener {
+class Feeder : public TimerEventListener, public Updateable {
 public:
     enum State {
         OFF,
@@ -23,7 +23,7 @@ private:
 public:
     Feeder();
 
-    void update();
+    virtual void update() override;
 
     void prefeed();
 

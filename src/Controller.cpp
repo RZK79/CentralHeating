@@ -32,16 +32,22 @@ void Controller::setup()
 
     feeder = new Feeder();
     feeder->stop();
+    updateables.push_back(feeder);
 
     blower = new Blower(15000);
+    updateables.push_back(blower);
 
     relays = new Relays();
     relays->turnOffAll();
     
     mainTimer = new MainTimer();
+    updateables.push_back(mainTimer);
     loopTimer = new LoopTimer();
+    updateables.push_back(loopTimer);
     cleaningTimer = new CleaningTimer();
+    updateables.push_back(cleaningTimer);
     currentStateTimer = new Timer();
+    updateables.push_back(currentStateTimer);
     currentStateTimer->addEventListener(this);
     
     changeStateTo(State::OFF);
@@ -49,12 +55,9 @@ void Controller::setup()
 
 void Controller::loop()
 {
-    feeder->update();
-    mainTimer->update();
-    cleaningTimer->update();
-    loopTimer->update();
-    blower->update();
-    currentStateTimer->update();
+    for(unsigned int i=0;i<updateables.size();i++){
+        updateables[i]->update();
+    }
     se->serialEvent();
 }
 

@@ -12,7 +12,7 @@ LoopTimer::LoopTimer()
 
 void LoopTimer::startFiringUpPreblow()
 {
-    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_50);
+    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_90);
     Controller::get()->getBlower()->start();
     Controller::get()->getMainTimer()->start(PREBLOW_TIME);
     Controller::get()->changeStateTo(Controller::State::FIRING_UP_PREBLOW);
@@ -43,7 +43,7 @@ void LoopTimer::startExtinction()
     Controller::get()->getRelays()->turnCentralHeatingPumpOn();
     Controller::get()->getRelays()->turnHotWaterPumpOn();
     Controller::get()->getFeeder()->stop();
-    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_50);
+    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_90);
     Controller::get()->getMainTimer()->stop();
     Controller::get()->getCleaningTimer()->stop();
     Controller::get()->changeStateTo(Controller::State::EXTINCTION);
@@ -92,12 +92,20 @@ void LoopTimer::onTime(Timer* timer)
                 Controller::get()->getFeeder()->setFeedTime(0.89f * Controller::get()->getCurrentState()->feederTimeToSet);
                 Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
             }
+            
+            if(Controller::get()->getCurrentState()->centralHeatingTemperature > Controller::get()->getCurrentState()->centralHeatingTemperatureToSet){
+                if(Controller::get()->getCurrentState()->hotWaterTemperature > Controller::get()->getCurrentState()->hotWaterTemperatureToSet){
+                        startExtinction();
+                }
+            }
         }
 
         if (Controller::get()->getCurrentState()->fumesTemperature < FUMES_L_MODULATION_TEMP) {
             Controller::get()->getFeeder()->setFeedTime(Controller::get()->getCurrentState()->feederTimeToSet);
             Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
         }
+
+
     } else if (Controller::get()->getState() == Controller::State::EXTINCTION) {
         if (Controller::get()->getCurrentState()->fumesTemperature < FUMES_MIN_TEMP) {
             off();
@@ -105,7 +113,7 @@ void LoopTimer::onTime(Timer* timer)
     }
 
     if(Controller::get()->getCurrentState()->centralHeatingTemperature > SAFE_CH_TEMP || Controller::get()->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP){
-        off();
+        startExtinction();
     }
 
     if (Controller::get()->getState() != Controller::State::OFF && Controller::get()->getCurrentState()->isOn == false) {

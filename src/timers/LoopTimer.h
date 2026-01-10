@@ -1,7 +1,7 @@
 #ifndef _LOOPTIMER_H_
 #define _LOOPTIMER_H_
 
-#include "Timer.h"
+#include "Timer/Timer.h"
 
 class LoopTimer : public Timer, public TimerEventListener {
     void startFiringUpPreblow();

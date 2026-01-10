@@ -2,11 +2,12 @@
 #define _TIMER_H_
 
 #include <vector>
+#include "Updateable.h"
 #include "TimerEventListener.h"
 
 using namespace std;
 
-class Timer{
+class Timer : public Updateable{
   unsigned long timeout;
   unsigned long startMillis;
   bool paused;
@@ -15,7 +16,7 @@ class Timer{
 public:
   Timer();
 
-  void update();
+  virtual void update() override;
 
   void addEventListener(TimerEventListener *listener);
 

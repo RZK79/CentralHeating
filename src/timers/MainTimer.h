@@ -1,8 +1,8 @@
 #ifndef _MAINTIMER_H_
 #define _MAINTIMER_H_
 
-#include "Timer.h"
-#include "TimerEventListener.h"
+#include "Timer/Timer.h"
+#include "Timer/TimerEventListener.h"
 
 class MainTimer : public TimerEventListener, public Timer {
     void startFiringUp();
