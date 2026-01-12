@@ -44,6 +44,7 @@ void Feeder::stop()
     digitalWrite(FEEDER, HIGH);
     feederTimer.pause();
     currentState = Feeder::State::OFF;
+    feederOn = false;
 }
 
 Feeder::State Feeder::getState()

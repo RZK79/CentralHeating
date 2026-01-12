@@ -15,9 +15,9 @@ void CurrentState::setDefault() {
     feederPeriodToSet = 5000;
     centralHeatingTemperatureToSet = 55;
     hotWaterTemperatureToSet = 45;
-    blowerSpeedToSetFiringUp = BlowerSpeed::RPM_20;
-    blowerSpeedToSetStabilization = BlowerSpeed::RPM_30;
-    blowerSpeedToSetNormal = BlowerSpeed::RPM_20;
+    blowerSpeedToSetFiringUp = 70;
+    blowerSpeedToSetStabilization = 50;
+    blowerSpeedToSetNormal = 30;
     centralHeatingTemperature = 0;
     hotWaterTemperature = 0;
     fumesTemperature = 0;

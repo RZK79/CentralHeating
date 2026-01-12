@@ -21,7 +21,7 @@ void MainTimer::startFiringUp()
 
 void MainTimer::startPrefeed()
 {
-    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_0);
+    Controller::get()->getBlower()->setSpeed(0);
     Controller::get()->getFeeder()->prefeed();
     Controller::get()->changeStateTo(Controller::State::PREFEED);
     start(PREFEED_TIME);
@@ -31,7 +31,7 @@ void MainTimer::stabilizationTimeout()
 {
     Controller::get()->getRelays()->turnOffAll();
     Controller::get()->getFeeder()->stop();
-    Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_50);
+    Controller::get()->getBlower()->setSpeed(90);
     Controller::get()->getCleaningTimer()->stop();
     Controller::get()->getCurrentState()->error = Errors::STABILIZATION_TIMEOUT;
     Controller::get()->changeStateTo(Controller::State::EXTINCTION);

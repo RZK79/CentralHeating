@@ -61,6 +61,14 @@ void Controller::loop()
     se->serialEvent();
 }
 
+void Controller::getSensorsData()
+{
+    currentState->fumesTemperature = (int)fumesTemperature->getTemperature();
+    currentState->centralHeatingTemperature = (int)boilerTemperature->getTemperature();
+    currentState->hotWaterTemperature = (int)hotWaterTankTemperature->getTemperature();
+    Serial.println(currentState->hotWaterTemperature );
+}
+
 void Controller::onTime(Timer* timer)
 {
     currentStateTime++;
@@ -104,22 +112,17 @@ void Controller::onTime(Timer* timer)
 #endif
 }
 
-SerialCommunication* Controller::getSerialCommunication(){
-    return se;
-}
 
-void Controller::getSensorsData()
-{
-    currentState->fumesTemperature = fumesTemperature->getTemperature();
-    currentState->centralHeatingTemperature = boilerTemperature->getTemperature();
-    currentState->hotWaterTemperature = hotWaterTankTemperature->getTemperature();
-}
 
 void Controller::changeStateTo(State newState)
 {
     currentStateTime = 0;
     currentStateTimer->start(SECOND_MILL);
     state = newState;
+}
+
+SerialCommunication* Controller::getSerialCommunication(){
+    return se;
 }
 
 Controller::State Controller::getState()

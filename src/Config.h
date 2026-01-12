@@ -36,7 +36,7 @@
 #define FUMES_MIN_TEMP              70
 #define FUMES_L_MODULATION_TEMP     130
 #define FUMES_H_MODULATION_TEMP     170
-#define FUMES_MAX_TEMP              200
+#define FUMES_MAX_TEMP              210
 #define MINIMAL_TEMP_FOR_CH         40
 #define MINIMAL_TEMP_FOR_HW         50
 #define FIRING_UP_TEMP_DIFF         10

@@ -2,22 +2,19 @@
 #define _BLOWER_H_
 
 #include <Arduino.h>
-#include "BlowerSpeed.h"
 #include "Updateable.h"
 
 // #define ENABLE_ENCODER
 
 class Blower : public Updateable {
 private:
+#ifdef ENABLE_ENCODER
     static int currentRPS;
     static int time;
     static int currentRPM;
-    float fullPeriod;
+#endif
+    int speed;
 public:
-    static bool on;
-    static int speed;
-    static unsigned int pwmOn;
-
     Blower(int PWMfreq);
     void start();
     void stop();

@@ -15,7 +15,7 @@ void CleaningTimer::onTime(Timer* timer) {
         Controller::get()->changeStateTo(Controller::State::NORMAL);
         start(TO_CLEANING_TIME);
     } else {
-        Controller::get()->getBlower()->setSpeed(BlowerSpeed::RPM_100);
+        Controller::get()->getBlower()->setSpeed(90);
         Controller::get()->getFeeder()->stop();
         Controller::get()->changeStateTo(Controller::State::CLEANING);
         start(CLEANING_TIME);
