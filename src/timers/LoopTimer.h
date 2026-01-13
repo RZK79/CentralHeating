@@ -9,6 +9,8 @@ class LoopTimer : public Timer, public TimerEventListener {
     void firingUpTimeout();
     void startExtinction();
     void off();
+    void manageCentralHeatingPump();
+    void manageHotWaterPump();
 public:
     LoopTimer();
     void onTime(Timer* timer) override;
