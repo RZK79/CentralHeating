@@ -97,20 +97,22 @@ void LoopTimer::onTime(Timer* timer)
         manageHotWaterPump();
 
         if (Controller::get()->getCurrentState()->fumesTemperature > FUMES_H_MODULATION_TEMP) {
-            Controller::get()->getFeeder()->setFeedTime(0.89f * Controller::get()->getCurrentState()->feederTimeToSet);
-            Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
+            // Controller::get()->getFeeder()->setFeedTime(0.89f * Controller::get()->getCurrentState()->feederTimeToSet);
+            // Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
             Controller::get()->getBlower()->setSpeed(Controller::get()->getCurrentState()->blowerSpeedToSetNormal - 10);
         }
 
         if (Controller::get()->getCurrentState()->fumesTemperature < FUMES_L_MODULATION_TEMP) {
-            Controller::get()->getFeeder()->setFeedTime(Controller::get()->getCurrentState()->feederTimeToSet);
-            Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
+            // Controller::get()->getFeeder()->setFeedTime(Controller::get()->getCurrentState()->feederTimeToSet);
+            // Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
             Controller::get()->getBlower()->setSpeed(Controller::get()->getCurrentState()->blowerSpeedToSetNormal + 10);
         }
 
-        if (Controller::get()->getCurrentState()->centralHeatingTemperature > Controller::get()->getCurrentState()->centralHeatingTemperatureToSet) {
-            if (Controller::get()->getCurrentState()->hotWaterTemperature > Controller::get()->getCurrentState()->hotWaterTemperatureToSet) {
-                startExtinction();
+        if (Controller::get()->getCurrentState()->fumesTemperature > FUMES_H_MODULATION_TEMP) {
+            if (Controller::get()->getCurrentState()->centralHeatingTemperature > Controller::get()->getCurrentState()->centralHeatingTemperatureToSet) {
+                if (Controller::get()->getCurrentState()->hotWaterTemperature > Controller::get()->getCurrentState()->hotWaterTemperatureToSet) {
+                    startExtinction();
+                }
             }
         }
 
@@ -123,7 +125,13 @@ void LoopTimer::onTime(Timer* timer)
         }
     }
 
-    if (Controller::get()->getCurrentState()->centralHeatingTemperature > SAFE_CH_TEMP || Controller::get()->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP) {
+    if (Controller::get()->getCurrentState()->centralHeatingTemperature > SAFE_CH_TEMP){
+        Controller::get()->getCurrentState()->error = Errors::CENTRAL_HEATING_TEMPERATURE_TO_HIGH;
+        startExtinction();
+    }
+    
+    if (Controller::get()->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP) {
+        Controller::get()->getCurrentState()->error = Errors::FUMES_TEMPERATURE_TOO_HIGH;
         startExtinction();
     }
 
