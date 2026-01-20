@@ -25,8 +25,8 @@
 #define SECOND                      (uint32_t)1
 #define MINUTE                      (uint32_t)60*SECOND
 
-#define FIRING_UP_TIME              4*MINUTE
-#define STABILIZATION_TIME          3*MINUTE
+#define FIRING_UP_TIME              4*MINUTE_MILL
+#define STABILIZATION_TIME          3*MINUTE_MILL
 #define TO_CLEANING_TIME            60*MINUTE_MILL
 #define CLEANING_TIME               10*SECOND_MILL
 #define PREBLOW_TIME                10*SECOND_MILL

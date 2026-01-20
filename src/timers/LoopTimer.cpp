@@ -24,7 +24,7 @@ void LoopTimer::startStabilization()
     Controller::get()->getBlower()->setSpeed(Controller::get()->getCurrentState()->blowerSpeedToSetStabilization);
     Controller::get()->getFeeder()->setFeedTime(0.7f * Controller::get()->getCurrentState()->feederTimeToSet);
     Controller::get()->getFeeder()->setPeriodTime(Controller::get()->getCurrentState()->feederPeriodToSet);
-    Controller::get()->getMainTimer()->start(STABILIZATION_TIME);
+    Controller::get()->getMainTimer()->start(Controller::get()->getCurrentState()->stabilizationTimeToSet);
     Controller::get()->changeStateTo(Controller::State::STABILIZATION);
 }
 
@@ -83,13 +83,17 @@ void LoopTimer::manageHotWaterPump()
 void LoopTimer::onTime(Timer* timer)
 {
     if (Controller::get()->getState() == Controller::State::OFF) {
-        if (Controller::get()->getCurrentState()->isOn && Controller::get()->getCurrentState()->fumesTemperature < FIRING_UP_MAX_TEMP && Controller::get()->getCurrentState()->centralHeatingTemperature < MINIMAL_TEMP_FOR_CH) {
+        if (Controller::get()->getCurrentState()->isOn && 
+            Controller::get()->getCurrentState()->fumesTemperature < FIRING_UP_MAX_TEMP && 
+            Controller::get()->getCurrentState()->centralHeatingTemperature < MINIMAL_TEMP_FOR_CH) {
             startFiringUpPreblow();
         }
     } else if (Controller::get()->getState() == Controller::State::FIRING_UP) {
-        if (Controller::get()->getCurrentStateTime() < (uint32_t)Controller::get()->getCurrentState()->firingUpTimeToSet && Controller::get()->getCurrentState()->fumesTemperature > FIRING_UP_MAX_TEMP) {
+        if (Controller::get()->getCurrentStateTime() < (uint32_t)Controller::get()->getCurrentState()->firingUpTimeToSet && 
+            Controller::get()->getCurrentState()->fumesTemperature > FIRING_UP_MAX_TEMP) {
             startStabilization();
-        } else if (Controller::get()->getCurrentStateTime() > (uint32_t)Controller::get()->getCurrentState()->firingUpTimeToSet || ((Controller::get()->getState() != Controller::State::OFF && !Controller::get()->getCurrentState()->isOn))) {
+        } else if (Controller::get()->getCurrentStateTime() > (uint32_t)Controller::get()->getCurrentState()->firingUpTimeToSet ||
+                 (Controller::get()->getState() != Controller::State::OFF && !Controller::get()->getCurrentState()->isOn)) {
             firingUpTimeout();
         }
     } else if (Controller::get()->getState() == Controller::State::NORMAL) {
@@ -125,17 +129,18 @@ void LoopTimer::onTime(Timer* timer)
         }
     }
 
-    if (Controller::get()->getCurrentState()->centralHeatingTemperature > SAFE_CH_TEMP){
+    if (Controller::get()->getCurrentState()->centralHeatingTemperature > SAFE_CH_TEMP) {
         Controller::get()->getCurrentState()->error = Errors::CENTRAL_HEATING_TEMPERATURE_TO_HIGH;
         startExtinction();
     }
-    
+
     if (Controller::get()->getCurrentState()->fumesTemperature > FUMES_MAX_TEMP) {
         Controller::get()->getCurrentState()->error = Errors::FUMES_TEMPERATURE_TOO_HIGH;
         startExtinction();
     }
 
-    if (Controller::get()->getState() != Controller::State::OFF && Controller::get()->getCurrentState()->isOn == false) {
+    if (Controller::get()->getState() != Controller::State::OFF && 
+        Controller::get()->getCurrentState()->isOn == false) {
         startExtinction();
     }
 }
