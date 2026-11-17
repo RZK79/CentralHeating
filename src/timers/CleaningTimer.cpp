@@ -1,12 +1,16 @@
 #include "CleaningTimer.h"
-#include "Controller.h"
 #include "Config.h"
+#include "Controller.h"
 
-CleaningTimer::CleaningTimer() {
+#define CLEANING_TIME 10*1000
+
+CleaningTimer::CleaningTimer()
+{
     addEventListener(this);
 }
 
-void CleaningTimer::onTime(Timer* timer) {
+void CleaningTimer::onTime(Timer* timer)
+{
     if (Controller::get()->getState() == Controller::State::CLEANING) {
         Controller::get()->getBlower()->setSpeed(Controller::get()->getCurrentState()->blowerSpeedToSetNormal);
         Controller::get()->getFeeder()->setFeedTime(Controller::get()->getCurrentState()->feederTimeToSet);

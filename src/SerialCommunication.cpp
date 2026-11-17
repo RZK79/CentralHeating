@@ -6,21 +6,19 @@
 #include <avr/wdt.h>
 #include <string.h>
 
-SerialCommunication::SerialCommunication(){
+SerialCommunication::SerialCommunication() {
     Serial.begin(9600);
     init();
 }
 
-void SerialCommunication::init()
-{
+void SerialCommunication::init() {
     recvInProgress = false;
     data[0] = { '\0' };
     i = 0;
 }
 
-void SerialCommunication::serialEvent()
-{
-    while(Serial.available()){
+void SerialCommunication::serialEvent() {
+    while (Serial.available()) {
         char c = Serial.read();
         if (recvInProgress) {
             if (c != end) {
@@ -41,8 +39,7 @@ void SerialCommunication::serialEvent()
     }
 }
 
-void SerialCommunication::parseData(char* data)
-{
+void SerialCommunication::parseData(char* data) {
     if (strncmp("ton", data, 3) == 0) {
         Controller::get()->getCurrentState()->isOn = true;
     } else if (strncmp("toff", data, 4) == 0) {
@@ -117,9 +114,15 @@ void SerialCommunication::parseData(char* data)
         Controller::get()->getCurrentState()->firingUpTimeToSet = atoi(&data[4]);
     } else if (strncmp("sst", data, 3) == 0) {
         Controller::get()->getCurrentState()->stabilizationTimeToSet = atoi(&data[3]);
-    } else if (strncmp("reset", data, 5) == 0) {
+    } else if (strncmp("gcs", data, 3) == 0){
+        Serial.print("*gcs");
+        Serial.print(Controller::get()->getState());
+        Serial.print("#");
+    }
+    
+    else if (strncmp("reset", data, 5) == 0) {
         wdt_disable();
         wdt_enable(WDTO_15MS);
-        while (true) { }
+        while (true) {}
     }
 }

@@ -75,12 +75,11 @@ void Blower::stop() {
 }
 
 void Blower::setSpeed(int _speed) {
-    float duty;
     speed = _speed;
     pwmValue = (unsigned int)((speed / 100.0f) * 255);
 }
 
-int Blower::getSpeed() {
+uint32_t Blower::getSpeed() {
     return speed;
 }
 

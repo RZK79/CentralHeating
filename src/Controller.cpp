@@ -4,6 +4,8 @@
 #include "SerialCommunication.h"
 #include "peripherals/Relays.h"
 
+static bool DBG = false;
+
 Controller* Controller::instance = nullptr;
 
 Controller* Controller::get()
@@ -40,8 +42,6 @@ void Controller::setup()
     relays = new Relays();
     relays->turnOffAll();
     
-    mainTimer = new MainTimer();
-    updateables.push_back(mainTimer);
     loopTimer = new LoopTimer();
     updateables.push_back(loopTimer);
     cleaningTimer = new CleaningTimer();
@@ -66,7 +66,10 @@ void Controller::getSensorsData()
     currentState->fumesTemperature = (int)fumesTemperature->getTemperature();
     currentState->centralHeatingTemperature = (int)boilerTemperature->getTemperature();
     currentState->hotWaterTemperature = (int)hotWaterTankTemperature->getTemperature();
-    Serial.println(currentState->hotWaterTemperature );
+
+    if(DBG){
+        Serial.println(currentState->hotWaterTemperature );
+    }
 }
 
 void Controller::onTime(Timer* timer)
@@ -112,12 +115,10 @@ void Controller::onTime(Timer* timer)
 #endif
 }
 
-
-
 void Controller::changeStateTo(State newState)
 {
     currentStateTime = 0;
-    currentStateTimer->start(SECOND_MILL);
+    currentStateTimer->start(1000);
     state = newState;
 }
 
@@ -130,43 +131,6 @@ Controller::State Controller::getState()
     return state;
 }
 
-const char* Controller::getStateAsString()
-{
-    switch (state) {
-    default:
-    case OFF:
-        return "OFF";
-
-    case FIRING_UP_PREBLOW:
-        return "FIRING_UP_PREBLOW";
-
-    case FIRING_UP_PREBLOW_DONE:
-        return "FIRING_UP_PREBLOW_DONE";
-
-    case PREFEED:
-        return "PREFEED";
-
-    case PREFEED_DONE:
-        return "PREFEED_DONE";
-
-    case FIRING_UP:
-        return "FIRING_UP";
-
-    case STABILIZATION:
-        return "STABILIZATION";
-
-    case NORMAL:
-        return "NORMAL";
-
-    case CLEANING:
-        return "CLEANING";
-
-
-    case EXTINCTION:
-        return "EXTINCTION";
-    }
-}
-
 Feeder* Controller::getFeeder()
 {
     return feeder;
@@ -175,11 +139,6 @@ Feeder* Controller::getFeeder()
 Blower* Controller::getBlower()
 {
     return blower;
-}
-
-MainTimer* Controller::getMainTimer()
-{
-    return mainTimer;
 }
 
 LoopTimer* Controller::getLoopTimer()

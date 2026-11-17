@@ -1,7 +1,7 @@
 #ifndef _BLOWER_H_
 #define _BLOWER_H_
 
-#include <Arduino.h>
+#include <stdint.h>
 #include "Updateable.h"
 
 // #define ENABLE_ENCODER
@@ -19,7 +19,7 @@ public:
     void start();
     void stop();
     void setSpeed(int speed);
-    int getSpeed();
+    uint32_t getSpeed();
     virtual void update() override;
     bool isOn();
 #ifdef ENABLE_ENCODER

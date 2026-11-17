@@ -8,8 +8,8 @@
 using namespace std;
 
 class Timer : public Updateable{
-  unsigned long timeout;
-  unsigned long startMillis;
+  uint32_t timeout;
+  uint32_t startMillis;
   bool paused;
   
   vector<TimerEventListener*> listeners;
@@ -20,7 +20,7 @@ public:
 
   void addEventListener(TimerEventListener *listener);
 
-  void start(unsigned long timoutToSet);
+  void start(uint32_t timoutToSet);
   void stop();
   void pause();
   void resume();

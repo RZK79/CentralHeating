@@ -1,10 +1,11 @@
-#include <Arduino.h>
 #include "Controller.h"
 
-void setup() {
+void setup()
+{
     Controller::get()->setup();
 }
 
-void loop() {
+void loop()
+{
     Controller::get()->loop();
 }

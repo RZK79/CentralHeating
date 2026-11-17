@@ -19,27 +19,6 @@
 
 #define HOT_WATER_NTC               5000
 #define CENTRAL_HEATING_NTC         10000
-
-#define SECOND_MILL                 (uint32_t)1000
-#define MINUTE_MILL                 (uint32_t)60*SECOND_MILL
-#define SECOND                      (uint32_t)1
-#define MINUTE                      (uint32_t)60*SECOND
-
-#define FIRING_UP_TIME              4*MINUTE_MILL
-#define STABILIZATION_TIME          3*MINUTE_MILL
-#define TO_CLEANING_TIME            60*MINUTE_MILL
-#define CLEANING_TIME               10*SECOND_MILL
-#define PREBLOW_TIME                10*SECOND_MILL
-#define PREFEED_TIME                10*SECOND_MILL
-
-#define FIRING_UP_MAX_TEMP          80
-#define FUMES_MIN_TEMP              70
-#define FUMES_L_MODULATION_TEMP     120
-#define FUMES_H_MODULATION_TEMP     170
-#define FUMES_MAX_TEMP              210
-#define MINIMAL_TEMP_FOR_CH         40
-#define MINIMAL_TEMP_FOR_HW         50
-#define FIRING_UP_TEMP_DIFF         10
-#define SAFE_CH_TEMP                70
+#define TO_CLEANING_TIME            60l*60l*1000l
 
 #endif

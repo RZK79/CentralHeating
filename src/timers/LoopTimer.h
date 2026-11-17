@@ -5,7 +5,11 @@
 
 class LoopTimer : public Timer, public TimerEventListener {
     void startFiringUpPreblow();
+    void startPrefeed();
+    void startFiringUp();
     void startStabilization();
+    void stabilizationTimeout();
+    void startNormal();
     void firingUpTimeout();
     void startExtinction();
     void off();

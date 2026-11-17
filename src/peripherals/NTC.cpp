@@ -1,5 +1,7 @@
 #include "NTC.h"
 
+static bool DBG = false;
+
 NTC::NTC(int resistance, const uint8_t analogPin, uint16_t Bvalue)
 {
     readPin = analogPin;
@@ -14,9 +16,11 @@ NTC::NTC(int resistance, const uint8_t analogPin, uint16_t Bvalue)
 float NTC::readSensor()
 {
     int a = analogRead(readPin);
-    if(readPin == A1){
-        Serial.print(a);
-        Serial.print(" ");
+    if (DBG) {
+        if (readPin == A1) {
+            Serial.print(a);
+            Serial.print(" ");
+        }
     }
     float URt = a * Ucc / 1023.0;
     float UR = Ucc - URt;
@@ -36,13 +40,13 @@ float NTC::getTemperature()
     for (int i = 0; i < 9; i++) {
         buf[i] = buf[i + 1];
         sum += buf[i];
-        if(readPin == A1){
+        if (readPin == A1) {
             // Serial.print((int)buf[i]);
             // Serial.print(" ");
         }
     }
     buf[9] = readSensor();
-    if(readPin == A1){
+    if (readPin == A1) {
         // Serial.println((int)buf[9]);
     }
     sum += buf[9];

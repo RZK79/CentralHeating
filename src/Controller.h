@@ -12,7 +12,6 @@
 #include "peripherals/ThermoCouple.h"
 #include "timers/CleaningTimer.h"
 #include "timers/LoopTimer.h"
-#include "timers/MainTimer.h"
 
 // #define SIMULATION
 
@@ -23,9 +22,7 @@ public:
     enum State {
         OFF,
         FIRING_UP_PREBLOW,
-        FIRING_UP_PREBLOW_DONE,
         PREFEED,
-        PREFEED_DONE,
         FIRING_UP,
         STABILIZATION,
         NORMAL,
@@ -44,7 +41,6 @@ private:
     Blower* blower;
 
     Timer* currentStateTimer;
-    MainTimer* mainTimer;
     LoopTimer* loopTimer;
     CleaningTimer* cleaningTimer;
 
@@ -58,7 +54,6 @@ private:
     vector<Updateable*> updateables;
 
     Controller();
-
 public:
     static Controller* get();
 
@@ -68,11 +63,9 @@ public:
     void changeStateTo(State newState);
 
     Controller::State getState();
-    const char* getStateAsString();
     Feeder* getFeeder();
     Blower* getBlower();
     Relays* getRelays();
-    MainTimer* getMainTimer();
     LoopTimer* getLoopTimer();
     CleaningTimer* getCleaningTimer();
     CurrentState* getCurrentState();

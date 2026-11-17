@@ -1,6 +1,8 @@
 #ifndef _CURRENTSTATE_H_
 #define _CURRENTSTATE_H_
 
+#include <stdint.h>
+
 class CurrentState {
 public:
     bool wifiConnected;
@@ -11,27 +13,28 @@ public:
 
     bool lighter;
 
-    int feederTimeToSet;
-    int feederPeriodToSet;
+    uint32_t feederTimeToSet;
+    uint32_t feederPeriodToSet;
+    uint32_t prefeedTime;
     
-    int centralHeatingTemperatureToSet;
-    int hotWaterTemperatureToSet;
+    uint32_t centralHeatingTemperatureToSet; //temperature to stop CH pump
+    uint32_t hotWaterTemperatureToSet;   //temperature to stop HW pump
 
-    int blowerSpeedToSetFiringUp;
-    int blowerSpeedToSetStabilization;
-    int blowerSpeedToSetNormal;
+    uint32_t blowerSpeedToSetFiringUp;
+    uint32_t blowerSpeedToSetStabilization;
+    uint32_t blowerSpeedToSetNormal;
     
-    int centralHeatingTemperature;
-    int hotWaterTemperature;
-    int fumesTemperature;
+    uint32_t centralHeatingTemperature;
+    uint32_t hotWaterTemperature;
+    uint32_t fumesTemperature;
     
-    int NTCch;
-    int NTChw;
+    uint32_t NTCch;
+    uint32_t NTChw;
     
-    int firingUpTimeToSet;
-    int stabilizationTimeToSet;
+    uint32_t firingUpTimeToSet;
+    uint32_t stabilizationTimeToSet;
     
-    int error;
+    uint32_t error;
     
     void setDefault();
 };
